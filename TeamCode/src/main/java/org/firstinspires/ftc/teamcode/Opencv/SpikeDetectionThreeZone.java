@@ -34,15 +34,6 @@ public class SpikeDetectionThreeZone extends OpenCvPipeline {
     public static double HighS = 62;
     public static double HighV = 255;
 
-//    public static double strictLowH = 0;
-//    public static double strictLowS = 158.7;
-//    public static double strictLowV = 194.1;
-//    public static double strictHighH = 255;
-//    public static double strictHighS = 255;
-//    public static double strictHighV = 255;
-//    public static double threshold1 = 100;
-//    public static double threshold2 = 200;
-
     int spikeZone = -1;
     private Point start = null;
     private Point end = null;
@@ -54,11 +45,9 @@ public class SpikeDetectionThreeZone extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        Mat mat = new Mat();
-
         // mat turns into HSV value
-        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        if (mat.empty()) {
+        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2HSV);
+        if (input.empty()) {
             return input;
         }
 
@@ -66,14 +55,14 @@ public class SpikeDetectionThreeZone extends OpenCvPipeline {
         Scalar lowHSV = new Scalar(LowH, LowS, LowV);
         Scalar highHSV = new Scalar(HighH, HighS, HighV);
 
-        Core.inRange(mat, lowHSV, highHSV, mat);
+        Core.inRange(input, lowHSV, highHSV, input);
 
-        Imgproc.morphologyEx(mat, mat, Imgproc.MORPH_OPEN, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(10, 10)));
+        Imgproc.morphologyEx(input, input, Imgproc.MORPH_OPEN, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(10, 10)));
 
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
 
-        Imgproc.findContours(mat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(input, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
         // Calculate the width of each zone
         int imageWidth = input.width();
@@ -107,7 +96,7 @@ public class SpikeDetectionThreeZone extends OpenCvPipeline {
             telemetry.update();
         }
 
-        return mat;
+        return input;
     }
     public byte getspikeZone(){
         return (byte)spikeZone;

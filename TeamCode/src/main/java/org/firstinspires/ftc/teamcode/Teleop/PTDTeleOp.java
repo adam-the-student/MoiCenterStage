@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Opencv.CvMaster;
-import org.firstinspires.ftc.teamcode.Opencv.SpikeDetectionThreeZone;
 
 @TeleOp(name = "PTDB teleop")
 public class PTDTeleOp extends LinearOpMode {
@@ -16,14 +14,9 @@ public class PTDTeleOp extends LinearOpMode {
         motor2 = hardwareMap.get(DcMotor.class , "frontRight");
         motor3 = hardwareMap.get(DcMotor.class , "backLeft");
         motor4 = hardwareMap.get(DcMotor.class , "backRight");
-        CvMaster cam1 = new CvMaster(hardwareMap, new SpikeDetectionThreeZone());
-        cam1.runPipeline();
         waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("Zone: ",cam1.getZone());
-            telemetry.update();
-
             double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x*1.15 ; // Counteract imperfect strafing
             double rx = -gamepad1.right_stick_x;
