@@ -21,9 +21,9 @@ public class PTDTeleOp extends LinearOpMode {
             double rx = -gamepad1.right_stick_x;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double motor1Power = (y + x + rx) / denominator;  //motor1 is top left corner
-            double motor2Power = (y - x - rx) / denominator;  //motor2 is top right corner
-            double motor3Power = (y - x + rx) / denominator;  //motor3 is bottom left corner
+            double motor1Power = (y + x - rx) / denominator;  //motor1 is top left corner
+            double motor2Power = (y + x - rx) / denominator;  //motor2 is top right corner
+            double motor3Power = (y + x - rx) / denominator;  //motor3 is bottom left corner
             double motor4Power = (y + x - rx) / denominator;  //motor4 is bottom right corner
 
             if(gamepad1.left_trigger >= 0.1){
