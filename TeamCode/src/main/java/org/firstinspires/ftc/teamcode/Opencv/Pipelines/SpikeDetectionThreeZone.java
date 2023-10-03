@@ -29,9 +29,9 @@ public class SpikeDetectionThreeZone extends OpenCvPipeline {
     //these are public static to be tuned in dashboard
     public static double LowH = 0;
     public static double LowS = 0;
-    public static double LowV = 152;
-    public static double HighH = 172;
-    public static double HighS = 62;
+    public static double LowV = 171.4;
+    public static double HighH = 174.3;
+    public static double HighS = 51;
     public static double HighV = 255;
 
     int spikeZone = -1;
