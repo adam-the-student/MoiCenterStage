@@ -9,14 +9,14 @@ import org.firstinspires.ftc.teamcode.Opencv.Pipelines.SpikeDetectionThreeZone;
 public class PipelineTesting extends LinearOpMode {
     @Override
     public void runOpMode(){
-        CvMaster cam1 = new CvMaster(hardwareMap, new SpikeDetectionThreeZone());
+        CvMaster cam1 = new CvMaster(this, new SpikeDetectionThreeZone());
         cam1.runPipeline();
         waitForStart();
 
         while (opModeIsActive()) {
             telemetry.addData("Camera 1 Zone: ",cam1.getZone());
             telemetry.update();
-            sleep(500);
         }
+        cam1.stopCamera();
     }
 }

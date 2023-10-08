@@ -12,14 +12,14 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class CvMaster {
     private OpenCvWebcam webcam;
     private SpikeDetectionThreeZone openCvPipeline;
-    private HardwareMap op;
-    public CvMaster(HardwareMap p_op, SpikeDetectionThreeZone pipeline){
+    private LinearOpMode op;
+    public CvMaster(LinearOpMode p_op, SpikeDetectionThreeZone pipeline){
         //you can input  a hardwareMap instead of linearOpMode if you want
         op = p_op;
         //initialize
         openCvPipeline = pipeline;
         //initialize webcam
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(op.get(WebcamName.class, "Webcam 1"));
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(op.hardwareMap.get(WebcamName.class, "Webcam 1"));
     }
 
     public void setPipeline(SpikeDetectionThreeZone pipeline){
@@ -64,7 +64,7 @@ public class CvMaster {
     }
 
     public byte getZone(){
-        return openCvPipeline.getspikeZone();
+        return openCvPipeline.getSpikeZone();
     }
 
     //stop streaming
