@@ -21,10 +21,10 @@ public class PTDTeleOp extends LinearOpMode {
             double rx = -gamepad1.right_stick_x;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double motor1Power = (y + x - rx) / denominator;  //motor1 is top left corner
-            double motor2Power = (y + x - rx) / denominator;  //motor2 is top right corner
-            double motor3Power = (y + x - rx) / denominator;  //motor3 is bottom left corner
-            double motor4Power = (y + x - rx) / denominator;  //motor4 is bottom right corner
+            double motor2Power = (y + x +  rx) / denominator;  //motor1 is top left corner
+            double motor1Power = (y - x + rx) / denominator;  //motor2 is top right corner
+            double motor4Power = (y - x - rx) / denominator;  //motor3 is bottom left corner
+            double motor3Power = (y + x -  rx) / denominator;
 
             if(gamepad1.left_trigger >= 0.1){
                 motor1Power = motor1Power/4;
@@ -40,9 +40,9 @@ public class PTDTeleOp extends LinearOpMode {
             }
 
             motor1.setPower(motor1Power/2);  // motor1 is top left
-            motor2.setPower(-motor2Power/2);  // motor2 is top right
+            motor2.setPower(motor2Power/2);  // motor2 is top right
             motor3.setPower(motor3Power/2);  // motor3 is bottom left
-            motor4.setPower(-motor4Power/2);  // motor4 is bottom right
+            motor4.setPower(motor4Power/2);  // motor4 is bottom right
         }
     }
 }
