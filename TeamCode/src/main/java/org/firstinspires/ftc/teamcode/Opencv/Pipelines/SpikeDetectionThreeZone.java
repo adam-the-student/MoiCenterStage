@@ -35,8 +35,6 @@ public class SpikeDetectionThreeZone extends OpenCvPipeline {
     public static double HighV = 255;
 
     int spikeZone = -1;
-    private Point start = null;
-    private Point end = null;
     public SpikeDetectionThreeZone() {
         frameList = new ArrayList<>();
     }
