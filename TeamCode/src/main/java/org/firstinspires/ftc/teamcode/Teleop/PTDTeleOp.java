@@ -7,17 +7,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "PTDB teleop")
 public class PTDTeleOp extends LinearOpMode {
-    private DcMotor motor1,motor2,motor3,motor4;
+    private DcMotor motor1,motor2,motor3,motor4, slideMotor;
     @Override
     public void runOpMode(){
         motor1 = hardwareMap.get(DcMotor.class , "frontLeft");
         motor2 = hardwareMap.get(DcMotor.class , "frontRight");
         motor3 = hardwareMap.get(DcMotor.class , "backLeft");
         motor4 = hardwareMap.get(DcMotor.class , "backRight");
+        slideMotor = hardwareMap.get(DcMotor.class, "spool");
         waitForStart();
 
         while (opModeIsActive()) {
-            double y = gamepad1.left_stick_y;
+            double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x*1.15 ; // Counteract imperfect strafing
             double rx = -gamepad1.right_stick_x;
 
@@ -44,6 +45,9 @@ public class PTDTeleOp extends LinearOpMode {
             motor2.setPower(-motor2Power/2);  // motor2 is top right
             motor3.setPower(motor3Power/2);  // motor3 is bottom left
             motor4.setPower(-motor4Power/2);  // motor4 is bottom right
+
+
+            slideMotor.setPower(3*gamepad2.left_stick_y/8);
         }
     }
 }

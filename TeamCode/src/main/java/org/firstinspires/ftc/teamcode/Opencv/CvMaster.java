@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opencv;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.SpikeDetectionThreeZone;
@@ -64,7 +65,7 @@ public class CvMaster {
     }
 
     public byte getZone(){
-        return openCvPipeline.getSpikeZone();
+        return openCvPipeline.getspikeZone();
     }
 
     //stop streaming

@@ -7,9 +7,10 @@ import org.firstinspires.ftc.teamcode.Opencv.Pipelines.SpikeDetectionThreeZone;
 
 @TeleOp(name = "Pipeline testing one camera")
 public class PipelineTesting extends LinearOpMode {
+    LinearOpMode linearOpMode = this;
     @Override
     public void runOpMode(){
-        CvMaster cam1 = new CvMaster(this, new SpikeDetectionThreeZone());
+        CvMaster cam1 = new CvMaster(linearOpMode, new SpikeDetectionThreeZone());
         cam1.runPipeline();
         waitForStart();
 
