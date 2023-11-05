@@ -20,7 +20,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Spkie+AprilTag Detection Right")
+@Autonomous(name = "Spike+AprilTag Detection Right")
 public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
     OpenCvCamera camera;
@@ -76,6 +76,7 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
 
             }
         });
+        lineFromVector(0,1,24);
         if (spikeZone==0) {
 
         }
@@ -124,12 +125,17 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
         }
 
     }
-    public void lineFromVector(double xVector, double yVector, double power, double distance){
+    public void lineFromVector(double xVector, double yVector, double distance){
 
         motor1.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor3.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor4.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        motor1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motor2.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motor3.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motor4.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         double denominator = Math.max(Math.abs(yVector) + Math.abs(xVector), 1);
         double motor1Power = (yVector + xVector) / denominator;  //motor1 is top left corner
@@ -143,7 +149,27 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
         motor3.setTargetPosition(targetDistance);
         motor4.setTargetPosition(-targetDistance);
 
+        motor1.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        motor2.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        motor3.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        motor4.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
+        while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())||!(motor3.getTargetPosition()-10 <= motor3.getCurrentPosition()&&motor3.getTargetPosition()+10 >= motor3.getCurrentPosition())||!(motor4.getTargetPosition()-10 <= motor4.getCurrentPosition()&&motor4.getTargetPosition()+10 >= motor4.getCurrentPosition())){
+            motor1.setPower(1-((double)motor1.getCurrentPosition()/motor1.getTargetPosition()));
+            motor2.setPower(1-((double)motor2.getCurrentPosition()/motor2.getTargetPosition()));
+            motor3.setPower(1-((double)motor3.getCurrentPosition()/motor3.getTargetPosition()));
+            motor4.setPower(1-((double)motor4.getCurrentPosition()/motor4.getTargetPosition()));
+            telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());
+            telemetry.addData("motor2 position: ", motor2.getCurrentPosition());
+            telemetry.addData("motor3 Position: ", motor3.getCurrentPosition());
+            telemetry.addData("motor4 position: ", motor4.getCurrentPosition());
+            telemetry.update();
+        }
+
+        motor1.setPower(0);
+        motor2.setPower(0);
+        motor3.setPower(0);
+        motor4.setPower(0);
 
     }
     void tagToTelemetry(AprilTagDetection detection)
