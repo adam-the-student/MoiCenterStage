@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "intake test")
+@TeleOp(name = "M1teleop")
 public class VengeanceTeleOpM1 extends LinearOpMode {
     private DcMotor motor1,motor2,motor3,motor4,slideMotor,intakeMotor;
-    private Servo Bs;
+    private Servo Bs, ignition;
     private CRServo locker;
     @Override
     public void runOpMode(){
@@ -21,11 +21,12 @@ public class VengeanceTeleOpM1 extends LinearOpMode {
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
         Bs = hardwareMap.get(Servo.class,"bigServo");
         locker = hardwareMap.get(CRServo.class,"locker");
+        ignition = hardwareMap.get(Servo.class,"ign");
 
         waitForStart();
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double x = -gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
 
             // Denominator is the largest motor power (absolute value) or 1
@@ -65,7 +66,8 @@ public class VengeanceTeleOpM1 extends LinearOpMode {
 
             // gamepad 2 starts
 
-            intakeMotor.setPower(gamepad2.right_stick_y*0.1);
+            slideMotor.setPower(gamepad2.right_stick_y/2);
+
             if (gamepad2.right_trigger!=0){
                 intakeMotor.setPower(1);
             } else if (gamepad2.left_trigger!=0) {
@@ -73,16 +75,26 @@ public class VengeanceTeleOpM1 extends LinearOpMode {
             } else {
                 intakeMotor.setPower(0);
             }
+
             if (gamepad2.x){
                locker.setPower(1);
             }
             else if(gamepad2.b){
                 locker.setPower(-1);
+            }else {
+                locker.setPower(0);
             }
-            if (gamepad2.dpad_left){
-                Bs.setPosition(10);
+
+            if (gamepad2.right_bumper){
+                Bs.setPosition(-1);
             } else if (gamepad2.dpad_down) {
-                
+                Bs.setPosition(-.4);
+            } else if (gamepad2.left_bumper) {
+                Bs.setPosition(.4);
+            }
+
+            if (gamepad1.right_bumper&&gamepad1.left_bumper){
+                ignition.setPosition(0);
             }
 
         }
