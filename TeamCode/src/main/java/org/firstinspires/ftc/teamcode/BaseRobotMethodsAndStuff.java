@@ -1,5 +1,73 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 public class BaseRobotMethodsAndStuff {
+    HardwareMap hardwareMap;
+    LinearOpMode l_op;
+    DcMotor motor1,motor2, armMotor;
+    Servo roller, wrist;
+    public final double WHEEL_CIRCUMFERENCE = Math.PI * 3, TICK_TO_DEGREE = ((6.5/3)/180)*537.6;
+
+    public BaseRobotMethodsAndStuff(LinearOpMode l_op) {
+        this.l_op = l_op;
+        hardwareMap = l_op.hardwareMap;
+        motor1 = hardwareMap.get(DcMotor.class, "leftMotor");
+        motor2 = hardwareMap.get(DcMotor.class, "rightMotor");
+        armMotor = hardwareMap.get(DcMotor.class, "armMotor");
+        roller = hardwareMap.get(Servo.class, "roller");
+        wrist = hardwareMap.get(Servo.class, "wrist");
+    }
+
+    public void forward(int ticks){
+        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        motor1.setTargetPosition(-(int)(ticks/WHEEL_CIRCUMFERENCE));
+        motor2.setTargetPosition((int)(ticks/WHEEL_CIRCUMFERENCE));
+
+        motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())){
+            motor1.setPower(1-((double)motor1.getCurrentPosition()/motor1.getTargetPosition()));
+            motor2.setPower(1-((double)motor2.getCurrentPosition()/motor2.getTargetPosition()));
+            l_op.telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());
+            l_op.telemetry.addData("motor2 position: ", motor2.getCurrentPosition());
+            l_op.telemetry.update();
+        }
+        motor1.setPower(0);
+        motor2.setPower(0);
+    }
+
+    public void turn(int degrees){
+        degrees *= TICK_TO_DEGREE;
+
+        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        motor1.setTargetPosition(degrees);
+        motor2.setTargetPosition(degrees);
+
+        motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())){
+            motor1.setPower(1-((double)motor1.getCurrentPosition()/motor1.getTargetPosition()));
+            motor2.setPower(1-((double)motor2.getCurrentPosition()/motor2.getTargetPosition()));
+            l_op.telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());
+            l_op.telemetry.addData("motor2 position: ", motor2.getCurrentPosition());
+            l_op.telemetry.update();
+        }
+        motor1.setPower(0);
+        motor2.setPower(0);
+    }
 
 }
