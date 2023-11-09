@@ -93,8 +93,11 @@ public class VengeanceTeleOpM1 extends LinearOpMode {
                 Bs.setPosition(.4);
             }
 
-            if (gamepad1.right_bumper&&gamepad1.left_bumper){
-                ignition.setPosition(0);
+            if (gamepad1.triangle){
+                ignition.setPosition(1);
+            }
+            else if (gamepad1.x){
+                ignition.setPosition(0.5);
             }
 
         }
