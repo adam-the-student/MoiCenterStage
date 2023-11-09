@@ -20,6 +20,9 @@ public class NewRobitsTeleOp extends LinearOpMode {
 
         double servoPos = 0;
         wrist.setPosition(servoPos);
+
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         waitForStart();
         boolean isDown=false;
         while (opModeIsActive()){
@@ -34,8 +37,9 @@ public class NewRobitsTeleOp extends LinearOpMode {
 
             //gamepad 2 controls
             roller.setPosition(gamepad2.right_trigger!=0?1:0);
-            if (gamepad2.square){
-                servoPos = isDown?0:9.0/56;
+
+            if (gamepad2.right_bumper){
+                servoPos = isDown?0:.1;
                 isDown = !isDown;
             }
             wrist.setPosition(servoPos);

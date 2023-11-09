@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name = "(Red) Backstage Park")
+@Autonomous(name = "Straight Park")
 public class ForwardPark extends LinearOpMode {
     DcMotor motor1,motor2, armMotor;
     Servo roller, wrist;

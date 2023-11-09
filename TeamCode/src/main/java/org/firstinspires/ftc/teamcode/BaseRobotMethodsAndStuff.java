@@ -10,7 +10,7 @@ public class BaseRobotMethodsAndStuff {
     LinearOpMode l_op;
     DcMotor motor1,motor2, armMotor;
     Servo roller, wrist;
-    public final double WHEEL_CIRCUMFERENCE = Math.PI * 3, TICK_TO_DEGREE = ((6.5/3)/180)*537.6;
+    public final double WHEEL_CIRCUMFERENCE = Math.PI * 3, DEGREE_TO_TICK = ((6.5/3)/180)*560;
 
     public BaseRobotMethodsAndStuff(LinearOpMode l_op) {
         this.l_op = l_op;
@@ -34,7 +34,7 @@ public class BaseRobotMethodsAndStuff {
         motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())){
+        while (!(motor1.getTargetPosition()-20 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+20 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-20 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+20 >= motor2.getCurrentPosition())){
             motor1.setPower(1-((double)motor1.getCurrentPosition()/motor1.getTargetPosition()));
             motor2.setPower(1-((double)motor2.getCurrentPosition()/motor2.getTargetPosition()));
             l_op.telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());
@@ -46,7 +46,7 @@ public class BaseRobotMethodsAndStuff {
     }
 
     public void turn(int degrees){
-        degrees *= TICK_TO_DEGREE;
+        degrees *= DEGREE_TO_TICK;
 
         motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -59,7 +59,7 @@ public class BaseRobotMethodsAndStuff {
         motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())){
+        while (!(motor1.getTargetPosition()-20 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+20 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-20 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+20 >= motor2.getCurrentPosition())){
             motor1.setPower(1-((double)motor1.getCurrentPosition()/motor1.getTargetPosition()));
             motor2.setPower(1-((double)motor2.getCurrentPosition()/motor2.getTargetPosition()));
             l_op.telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());

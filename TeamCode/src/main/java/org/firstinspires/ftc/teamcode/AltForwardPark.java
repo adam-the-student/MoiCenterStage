@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "Alt Park")
+@Autonomous(name = "Alt Straight Park")
 public class AltForwardPark extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -12,7 +12,7 @@ public class AltForwardPark extends LinearOpMode {
 
         waitForStart();
 
-        robotMethods.forward((int)(537.6*51)*90);
+        robotMethods.forward((int)(537.6*90));
 
     }
 
