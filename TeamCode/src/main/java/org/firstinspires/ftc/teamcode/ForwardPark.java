@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name = "(Red) Backstage Park")
-public class ParkRed extends LinearOpMode {
+public class ForwardPark extends LinearOpMode {
     DcMotor motor1,motor2, armMotor;
     Servo roller, wrist;
     @Override
@@ -16,6 +16,9 @@ public class ParkRed extends LinearOpMode {
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         roller = hardwareMap.get(Servo.class, "roller");
         wrist = hardwareMap.get(Servo.class, "wrist");
+
+
+
         wrist.setPosition(9/(double)56);
         sleep(1000);
         roller.setPosition(1);
