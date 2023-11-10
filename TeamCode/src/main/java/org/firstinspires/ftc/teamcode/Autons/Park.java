@@ -24,32 +24,34 @@ public class Park extends LinearOpMode {
 
     }
     public void forward(int distance){
-        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        sideWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        sideWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        motor1.setTargetPosition(-(int)(distance*1440));
-        motor2.setTargetPosition((int)(distance*1440));
-        motor3.setTargetPosition(-(int)(distance*1440));
-        motor4.setTargetPosition((int)(distance*1440));
+        //target position
+        leftWheel.setTargetPosition(-(int)(8192*distance*2*Math.PI));
+        rightWheel.setTargetPosition((int)(8192*distance*2*Math.PI));
+        sideWheel.setTargetPosition(0);
 
-        motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sideWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motor1.setPower(.25);
         motor2.setPower(0.25);
         motor3.setPower(0.25);
         motor4.setPower(0.25);
 
-        while (motor1.isBusy())
+        while (leftWheel.getCurrentPosition()+10<leftWheel.getTargetPosition()||rightWheel.getCurrentPosition()+10<rightWheel.getTargetPosition()||sideWheel.getCurrentPosition()+10<sideWheel.getTargetPosition()){
+//            motor1.setPower((1-((double)leftWheel.getCurrentPosition()/leftWheel.getTargetPosition())));
+//            motor3.setPower((1-((double)leftWheel.getCurrentPosition()/leftWheel.getTargetPosition())));
+//            motor2.setPower((1-((double)leftWheel.getCurrentPosition()/leftWheel.getTargetPosition())));
+//            motor4.setPower((1-((double)leftWheel.getCurrentPosition()/leftWheel.getTargetPosition())));
+        }
 
         motor1.setPower(0);
         motor2.setPower(0);
