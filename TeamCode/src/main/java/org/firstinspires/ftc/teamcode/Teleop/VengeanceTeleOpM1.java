@@ -90,7 +90,7 @@ public class VengeanceTeleOpM1 extends LinearOpMode {
             } else if (gamepad2.dpad_down) {
                 Bs.setPosition(-.4);
             } else if (gamepad2.left_bumper) {
-                Bs.setPosition(.4);
+                Bs.setPosition(.375);
             }
 
             if (gamepad1.triangle){
