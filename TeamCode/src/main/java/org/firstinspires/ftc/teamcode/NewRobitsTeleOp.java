@@ -39,7 +39,7 @@ public class NewRobitsTeleOp extends LinearOpMode {
             roller.setPosition(gamepad2.right_trigger!=0?1:0);
 
             if (gamepad2.right_bumper){
-                servoPos = isDown?0:.1;
+                servoPos = isDown?0:.34;
                 isDown = !isDown;
             }
             wrist.setPosition(servoPos);
