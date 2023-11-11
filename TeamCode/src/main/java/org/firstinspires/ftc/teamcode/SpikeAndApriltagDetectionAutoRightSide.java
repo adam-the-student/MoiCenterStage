@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -13,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Opencv.CvMaster;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.SpikeDetectionThreeZone;
+import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionRed;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -25,7 +25,7 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
     OpenCvCamera camera;
     static final double FEET_PER_METER = 3.28084;
-    DcMotorEx motor1, motor2, motor3, motor4;
+    DcMotor motor1, motor2, motor3, motor4;
     // Lens intrinsics
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
@@ -38,104 +38,121 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
     // UNITS ARE METERS
     double tagsize = 0.166;
 
-    int[] ID_TAGS_OF_INTEREST = {1,2,3}; // Tag ID 18 from the 36h11 family
+    int[] ID_TAG_OF_INTEREST = {1,2,3,4,5,6};
 
     AprilTagDetection tagOfInterest = null;
     @Override
     public void runOpMode() throws InterruptedException {
-        motor1 = hardwareMap.get(DcMotorEx.class, "frontRight");
-        motor2 = hardwareMap.get(DcMotorEx.class,"frontRight");
-        motor3 = hardwareMap.get(DcMotorEx.class,"backLeft");
-        motor4 = hardwareMap.get(DcMotorEx.class,"backRight");
+        motor1 = hardwareMap.get(DcMotor.class, "frontLeft");
+        motor2 = hardwareMap.get(DcMotor.class,"frontRight");
+        motor3 = hardwareMap.get(DcMotor.class,"backLeft");
+        motor4 = hardwareMap.get(DcMotor.class,"backRight");
         int spikeZone = 0;
-            CvMaster cam1 = new CvMaster(this, new SpikeDetectionThreeZone());
+            CvMaster cam1 = new CvMaster(this, new SpikeZoneDetectionRed());
             cam1.runPipeline();
         while (!isStarted() && !isStopRequested()) {
             spikeZone = cam1.getZone();
             telemetry.addData("Camera 1 Zone: ", spikeZone);
             telemetry.update();
+
         }
         // just started
             cam1.stopCamera();
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
-        camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });
         lineFromVector(0,1,24);
-        if (spikeZone==0) {
 
-        }
-
-
-        telemetry.setMsTransmissionInterval(50);
-        boolean tagFound = false;
-        while (!tagFound)
-        {
-            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-
-            if(currentDetections.size() != 0)
-            {
-                for(AprilTagDetection tag : currentDetections)
-                {
-                    for (int tagID:ID_TAGS_OF_INTEREST) {
-                        if (tag.id == tagID) {
-                            tagOfInterest = tag;
-                            tagFound = true;
-                            break;
-                        }
-                    }
-                }
-                if(tagFound)
-                {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
-                }
-                else
-                {
-                    telemetry.addLine("Don't see tag of interest :(");
-
-                    if(tagOfInterest == null)
-                    {
-                        telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-            }
-            telemetry.update();
-            sleep(20);
-        }
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+//        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+//
+//        camera.setPipeline(aprilTagDetectionPipeline);
+//        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+//        {
+//            @Override
+//            public void onOpened()
+//            {
+//                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+//            }
+//
+//            @Override
+//            public void onError(int errorCode)
+//            {
+//
+//            }
+//        });
+//
+//        telemetry.setMsTransmissionInterval(50);
+//        boolean tagFound = false;
+//        while (!tagFound)
+//        {
+//            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+//
+//            if(currentDetections.size() != 0)
+//            {
+//                for(AprilTagDetection tag : currentDetections)
+//                {
+//                    for (int THETAGOFINTEREST:ID_TAG_OF_INTEREST) {
+//                        if (tag.id ==THETAGOFINTEREST) {
+//                            tagOfInterest = tag;
+//                            tagFound = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//
+//                if(tagFound)
+//                {
+//                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+//                    tagToTelemetry(tagOfInterest);
+//                }
+//                else
+//                {
+//                    telemetry.addLine("Don't see tag of interest :(");
+//
+//                    if(tagOfInterest == null)
+//                    {
+//                        telemetry.addLine("(The tag has never been seen)");
+//                    }
+//                    else
+//                    {
+//                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+//                        tagToTelemetry(tagOfInterest);
+//                    }
+//                }
+//
+//            }
+//            else
+//            {
+//                telemetry.addLine("Don't see tag of interest :(");
+//
+//                if(tagOfInterest == null)
+//                {
+//                    telemetry.addLine("(The tag has never been seen)");
+//                }
+//                else
+//                {
+//                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+//                    tagToTelemetry(tagOfInterest);
+//                }
+//
+//            }
+//
+//            telemetry.update();
+//            sleep(20);
+//        }
 
     }
     public void lineFromVector(double xVector, double yVector, double distance){
 
-        motor1.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motor2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motor3.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motor4.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        motor1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        motor2.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        motor3.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        motor4.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         double denominator = Math.max(Math.abs(yVector) + Math.abs(xVector), 1);
         double motor1Power = (yVector + xVector) / denominator;  //motor1 is top left corner
@@ -144,21 +161,21 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
         double motor4Power = (yVector + xVector) / denominator;  //motor4 is bottom right corner
         int targetDistance = (int)(distance / Math.sqrt(Math.pow(yVector,2)+Math.pow(xVector,2))*103.6);
 
-        motor1.setTargetPosition(-targetDistance);
-        motor2.setTargetPosition(targetDistance);
-        motor3.setTargetPosition(targetDistance);
-        motor4.setTargetPosition(-targetDistance);
+        motor1.setTargetPosition(targetDistance);
+        motor2.setTargetPosition(-targetDistance);
+        motor3.setTargetPosition(-targetDistance);
+        motor4.setTargetPosition(targetDistance);
 
-        motor1.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        motor2.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        motor3.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        motor4.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())||!(motor3.getTargetPosition()-10 <= motor3.getCurrentPosition()&&motor3.getTargetPosition()+10 >= motor3.getCurrentPosition())||!(motor4.getTargetPosition()-10 <= motor4.getCurrentPosition()&&motor4.getTargetPosition()+10 >= motor4.getCurrentPosition())){
-            motor1.setPower(1-((double)motor1.getCurrentPosition()/motor1.getTargetPosition()));
-            motor2.setPower(1-((double)motor2.getCurrentPosition()/motor2.getTargetPosition()));
-            motor3.setPower(1-((double)motor3.getCurrentPosition()/motor3.getTargetPosition()));
-            motor4.setPower(1-((double)motor4.getCurrentPosition()/motor4.getTargetPosition()));
+            motor1.setPower(motor1Power);
+            motor2.setPower(-motor2Power);
+            motor3.setPower(-motor3Power);
+            motor4.setPower(motor4Power);
             telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());
             telemetry.addData("motor2 position: ", motor2.getCurrentPosition());
             telemetry.addData("motor3 Position: ", motor3.getCurrentPosition());

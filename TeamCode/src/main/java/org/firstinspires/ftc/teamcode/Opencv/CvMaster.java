@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.SpikeDetectionThreeZone;
+import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionRed;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -12,9 +13,9 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 public class CvMaster {
     private OpenCvWebcam webcam;
-    private SpikeDetectionThreeZone openCvPipeline;
+    private SpikeZoneDetectionRed openCvPipeline;
     private LinearOpMode op;
-    public CvMaster(LinearOpMode p_op, SpikeDetectionThreeZone pipeline){
+    public CvMaster(LinearOpMode p_op, SpikeZoneDetectionRed pipeline){
         //you can input  a hardwareMap instead of linearOpMode if you want
         op = p_op;
         //initialize
@@ -23,7 +24,7 @@ public class CvMaster {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(op.hardwareMap.get(WebcamName.class, "Webcam 1"));
     }
 
-    public void setPipeline(SpikeDetectionThreeZone pipeline){
+    public void setPipeline(SpikeZoneDetectionRed pipeline){
         openCvPipeline = pipeline;
     }
 
@@ -64,8 +65,8 @@ public class CvMaster {
         });
     }
 
-    public byte getZone(){
-        return openCvPipeline.getspikeZone();
+    public int getZone(){
+        return openCvPipeline.getZone();
     }
 
     //stop streaming
