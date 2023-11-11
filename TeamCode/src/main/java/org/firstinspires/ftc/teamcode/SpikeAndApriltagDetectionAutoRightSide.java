@@ -59,7 +59,7 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
         // just started
             cam1.stopCamera();
 
-        lineFromVector(0,1,24);
+        lineFromVector(-1,0,2);
 
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -155,16 +155,17 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
         motor4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         double denominator = Math.max(Math.abs(yVector) + Math.abs(xVector), 1);
-        double motor1Power = (yVector + xVector) / denominator;  //motor1 is top left corner
-        double motor2Power = (yVector - xVector) / denominator;  //motor2 is top right corner
-        double motor3Power = (yVector - xVector) / denominator;  //motor3 is bottom left corner
-        double motor4Power = (yVector + xVector) / denominator;  //motor4 is bottom right corner
+        double motor1Power = (yVector + xVector) / denominator;
+        double motor2Power = (yVector - xVector) / denominator;
+        double motor3Power = (yVector - xVector) / denominator;
+        double motor4Power = (yVector + xVector) / denominator;
+
         int targetDistance = (int)(distance / Math.sqrt(Math.pow(yVector,2)+Math.pow(xVector,2))*103.6);
 
-        motor1.setTargetPosition(targetDistance);
-        motor2.setTargetPosition(-targetDistance);
-        motor3.setTargetPosition(-targetDistance);
-        motor4.setTargetPosition(targetDistance);
+        motor1.setTargetPosition((int)(motor1Power/Math.abs(motor1Power))*targetDistance);
+        motor2.setTargetPosition((int)(motor2Power/Math.abs(motor2Power))*targetDistance);
+        motor3.setTargetPosition((int)(motor3Power/Math.abs(motor3Power))*targetDistance);
+        motor4.setTargetPosition((int)(motor4Power/Math.abs(motor4Power))*targetDistance);
 
         motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -172,10 +173,10 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
         motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())||!(motor3.getTargetPosition()-10 <= motor3.getCurrentPosition()&&motor3.getTargetPosition()+10 >= motor3.getCurrentPosition())||!(motor4.getTargetPosition()-10 <= motor4.getCurrentPosition()&&motor4.getTargetPosition()+10 >= motor4.getCurrentPosition())){
-            motor1.setPower(motor1Power);
-            motor2.setPower(-motor2Power);
-            motor3.setPower(-motor3Power);
-            motor4.setPower(motor4Power);
+            motor1.setPower(motor1Power/2);  // motor1 is top left
+            motor2.setPower(-motor2Power/2);  // motor2 is top right
+            motor3.setPower(motor3Power/2);  // motor3 is bottom left
+            motor4.setPower(motor4Power/2);  // motor4 is bottom right
             telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());
             telemetry.addData("motor2 position: ", motor2.getCurrentPosition());
             telemetry.addData("motor3 Position: ", motor3.getCurrentPosition());
