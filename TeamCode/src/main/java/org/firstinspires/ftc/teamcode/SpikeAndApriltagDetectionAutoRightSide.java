@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -77,9 +76,7 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
             }
         });
         lineFromVector(0,1,24);
-        if (spikeZone==0) {
-
-        }
+        
 
 
         telemetry.setMsTransmissionInterval(50);
@@ -155,10 +152,10 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
         motor4.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())||!(motor3.getTargetPosition()-10 <= motor3.getCurrentPosition()&&motor3.getTargetPosition()+10 >= motor3.getCurrentPosition())||!(motor4.getTargetPosition()-10 <= motor4.getCurrentPosition()&&motor4.getTargetPosition()+10 >= motor4.getCurrentPosition())){
-            motor1.setPower(1-((double)motor1.getCurrentPosition()/motor1.getTargetPosition()));
-            motor2.setPower(1-((double)motor2.getCurrentPosition()/motor2.getTargetPosition()));
-            motor3.setPower(1-((double)motor3.getCurrentPosition()/motor3.getTargetPosition()));
-            motor4.setPower(1-((double)motor4.getCurrentPosition()/motor4.getTargetPosition()));
+            motor1.setPower(motor1Power*(1.1-((double)motor1.getCurrentPosition()/motor1.getTargetPosition())));
+            motor2.setPower(motor2Power*(1.1-((double)motor2.getCurrentPosition()/motor2.getTargetPosition())));
+            motor3.setPower(motor3Power*(1.1-((double)motor3.getCurrentPosition()/motor3.getTargetPosition())));
+            motor4.setPower(motor4Power*(1.1-((double)motor4.getCurrentPosition()/motor4.getTargetPosition())));
             telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());
             telemetry.addData("motor2 position: ", motor2.getCurrentPosition());
             telemetry.addData("motor3 Position: ", motor3.getCurrentPosition());
