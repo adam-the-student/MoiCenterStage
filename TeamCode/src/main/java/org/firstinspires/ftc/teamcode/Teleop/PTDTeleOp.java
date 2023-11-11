@@ -14,7 +14,7 @@ public class PTDTeleOp extends LinearOpMode {
         motor2 = hardwareMap.get(DcMotor.class , "frontRight");
         motor3 = hardwareMap.get(DcMotor.class , "backLeft");
         motor4 = hardwareMap.get(DcMotor.class , "backRight");
-        slideMotor = hardwareMap.get(DcMotor.class, "spool");
+//        slideMotor = hardwareMap.get(DcMotor.class, "spool");
         waitForStart();
 
         while (opModeIsActive()) {
@@ -47,7 +47,7 @@ public class PTDTeleOp extends LinearOpMode {
             motor4.setPower(-motor4Power/2);  // motor4 is bottom right
 
 
-            slideMotor.setPower(3*gamepad2.left_stick_y/8);
+//            slideMotor.setPower(3*gamepad2.left_stick_y/8);
         }
     }
 }
