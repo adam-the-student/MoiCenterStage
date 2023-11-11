@@ -173,8 +173,8 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
 
         while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())||!(motor3.getTargetPosition()-10 <= motor3.getCurrentPosition()&&motor3.getTargetPosition()+10 >= motor3.getCurrentPosition())||!(motor4.getTargetPosition()-10 <= motor4.getCurrentPosition()&&motor4.getTargetPosition()+10 >= motor4.getCurrentPosition())){
             motor1.setPower(motor1Power);
-            motor2.setPower(motor2Power);
-            motor3.setPower(motor3Power);
+            motor2.setPower(-motor2Power);
+            motor3.setPower(-motor3Power);
             motor4.setPower(motor4Power);
             telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());
             telemetry.addData("motor2 position: ", motor2.getCurrentPosition());
