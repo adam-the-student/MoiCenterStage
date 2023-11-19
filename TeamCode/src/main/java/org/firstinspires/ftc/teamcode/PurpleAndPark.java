@@ -21,8 +21,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Spike+AprilTag Detection Right")
-public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
+@Autonomous(name = "Park and Purple")
+public class PurpleAndPark extends LinearOpMode {
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
     OpenCvCamera camera;
     static final double FEET_PER_METER = 3.28084;
@@ -50,8 +50,8 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
         motor4 = hardwareMap.get(DcMotor.class,"backRight");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
         int spikeZone = 0;
-            CvMaster cam1 = new CvMaster(this, new SpikeZoneDetectionRed());
-            cam1.runPipeline();
+        CvMaster cam1 = new CvMaster(this, new SpikeZoneDetectionRed());
+        cam1.runPipeline();
         while (!isStarted()) {
             spikeZone = cam1.getZone();
             telemetry.addData("Camera 1 Zone: ", spikeZone);
@@ -63,20 +63,34 @@ public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
             sleep(1000);
         }
         // just started
-            cam1.stopCamera();
+        cam1.stopCamera();
 
         lineFromVector(0,1,4);
         sleep(500);
 
         if(spikeZone==1){
             turn(1.8);
+            sleep(500);
+            intakeMotor.setPower(.75);
+            sleep(500);
+            intakeMotor.setPower(0);
+            lineFromVector(0,1,2);
         } else if (spikeZone==3){
             turn(-1.8);
+            sleep(500);
+            intakeMotor.setPower(.75);
+            sleep(500);
+            intakeMotor.setPower(0);
+            lineFromVector(0,-1,2);
+        }else {
+            sleep(500);
+            intakeMotor.setPower(.75);
+            sleep(500);
+            intakeMotor.setPower(0);
+            lineFromVector(1,0,2);
         }
-        sleep(500);
-        intakeMotor.setPower(.75);
-        sleep(1000);
-        intakeMotor.setPower(0);
+
+
 
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
