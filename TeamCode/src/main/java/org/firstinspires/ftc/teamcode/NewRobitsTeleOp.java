@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.ServoImpl;
 @TeleOp(name = "Meet TeleOP")
 public class NewRobitsTeleOp extends LinearOpMode {
     DcMotor motor1,motor2, armMotor;
-    Servo roller, wrist, Ign;
+    Servo roller, wrist;
     @Override
     public void runOpMode(){
         motor1 = hardwareMap.get(DcMotor.class,"leftMotor");
@@ -17,7 +17,7 @@ public class NewRobitsTeleOp extends LinearOpMode {
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         roller = hardwareMap.get(Servo.class, "roller");
         wrist = hardwareMap.get(Servo.class,"wrist");
-        Ign = hardwareMap.get(Servo.class, "ign");
+
         double servoPos = 0;
         wrist.setPosition(servoPos);
 
@@ -43,14 +43,8 @@ public class NewRobitsTeleOp extends LinearOpMode {
                 isDown = !isDown;
             }
             wrist.setPosition(servoPos);
-            if (gamepad2.x){
-                Ign.setPosition(1);
-            }
-            else if (gamepad2.triangle){
-                Ign.setPosition(0.5);
-            }
 
-            armMotor.setPower(-gamepad2.left_stick_y);
+            armMotor.setPower(-gamepad2.left_stick_y/2);
             telemetry.addData("Servo Position: ", servoPos);
 
             telemetry.update();
