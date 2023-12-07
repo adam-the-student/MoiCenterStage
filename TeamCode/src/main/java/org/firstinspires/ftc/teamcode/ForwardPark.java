@@ -5,51 +5,73 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name = "Straight Park")
+import org.firstinspires.ftc.teamcode.OpenCV.CVMaster;
+import org.firstinspires.ftc.teamcode.OpenCV.Workspasce.SpikeZoneDetectionBlue;
+import org.firstinspires.ftc.teamcode.OpenCV.Workspasce.SpikeZoneDetectionRed;
+
+@Autonomous(name = "50pointautonBlue")
 public class ForwardPark extends LinearOpMode {
     DcMotor motor1,motor2, armMotor;
     Servo roller, wrist;
     @Override
     public void runOpMode() {
-        motor1 = hardwareMap.get(DcMotor.class, "leftMotor");
-        motor2 = hardwareMap.get(DcMotor.class, "rightMotor");
-        armMotor = hardwareMap.get(DcMotor.class, "armMotor");
-        roller = hardwareMap.get(Servo.class, "roller");
-        wrist = hardwareMap.get(Servo.class, "wrist");
 
+    CVMaster Cam1 = new CVMaster(this, new SpikeZoneDetectionRed());
+        BaseRobotMethodsAndStuff robotMethods = new BaseRobotMethodsAndStuff(this);
+    Cam1.runPipeline();
+    int zone = 2;
 
-
-        wrist.setPosition(9/(double)56);
-        sleep(1000);
-        roller.setPosition(1);
-        sleep(1000);
-        wrist.setPosition(0);
-        waitForStart();
-        //537.6 ticks per rev
-        forward((int)(537.6*5));
-        sleep(2000);
-        roller.setPosition(0);
+    while (!isStarted()) {
+         zone = Cam1.getZone();
+        telemetry.addData("zone", zone);
+        telemetry.update();
     }
-    public void forward(int distance){
-        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    waitForStart();
+        Cam1.stopCamera();
+        //537.6 ticks per rev
 
-        motor1.setTargetPosition(-distance);
-        motor2.setTargetPosition(distance);
-
-        motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        while (!(motor1.getTargetPosition()-10 <= motor1.getCurrentPosition()&&motor1.getTargetPosition()+10 >= motor1.getCurrentPosition())||!(motor2.getTargetPosition()-10 <= motor2.getCurrentPosition()&&motor2.getTargetPosition()+10 >= motor2.getCurrentPosition())){
-            motor1.setPower(1-((double)motor1.getCurrentPosition()/motor1.getTargetPosition()));
-            motor2.setPower(1-((double)motor2.getCurrentPosition()/motor2.getTargetPosition()));
-            telemetry.addData("motor1 Position: ", motor1.getCurrentPosition());
-            telemetry.addData("motor2 position: ", motor2.getCurrentPosition());
-            telemetry.update();
-        }
-        motor1.setPower(0);
-        motor2.setPower(0);
+        robotMethods.forward((int)(537.6*25),.5);
+            if (zone == 1){
+                robotMethods.turn(50,1);
+                sleep(500);
+                robotMethods.forward((int)(537.6*-6));
+                robotMethods.turn(45,1);
+                robotMethods.forward((int)(537.6*36));
+                robotMethods.turn(12,1);
+                robotMethods.forward((int)(537.6*2));
+                robotMethods.putYellow();
+                sleep(1000);
+                robotMethods.forward((int)(537.6*-2));
+             // auton code
+            }
+            else if (zone == 2) {
+                robotMethods.forward((int)(537.6*3));
+                sleep(500);
+                robotMethods.forward((int)(537.6*-5));
+                robotMethods.turn(75);
+                robotMethods.forward((int)(537.6*35));
+                robotMethods.turn(30);
+                robotMethods.forward((int)(537.6*2));
+                robotMethods.putYellow();
+                sleep(1000);
+                robotMethods.forward((int)(-537.6*2));
+                // auton /\
+            }
+            else if (zone==3){
+                robotMethods.turn(-40,.2);
+                robotMethods.forward((int)(537.6),.5);
+                robotMethods.turn(-30,.2);
+                sleep(500);
+                robotMethods.forward((int)(537.6*-5.5));
+                robotMethods.turn(125,.5);
+                robotMethods.forward((int)(537.6*31),1);
+                robotMethods.turn(40,.5);
+                sleep(100);
+                robotMethods.forward((int)(537.6*7),.5);
+                robotMethods.putYellow();
+                sleep(1000);
+                robotMethods.forward((int)(537.6*-2));
+                // auton /\
+            }
     }
 }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpenCV.Workspasce;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.OpenCV.TransitionPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -10,12 +11,11 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpikeZoneDetectionRed extends OpenCvPipeline {
+public class SpikeZoneDetectionRed extends TransitionPipeline {
     Telemetry telemetry;
     private double largestArea = 0;
     // rectangles
@@ -125,10 +125,7 @@ public class SpikeZoneDetectionRed extends OpenCvPipeline {
         return mat;
     }
 
-    public int LENGTH() {
-        return (int) Core.norm(new MatOfPoint2f(start), new MatOfPoint2f(end));
-    }
-
+    @Override
     public byte getZone() {
         return (byte)(spikeZone+1);
     }
