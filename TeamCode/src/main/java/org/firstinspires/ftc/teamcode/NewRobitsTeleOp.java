@@ -18,7 +18,6 @@ public class NewRobitsTeleOp extends LinearOpMode {
         ignition = hardwareMap.get(Servo.class,"ign");
 
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         waitForStart();
         boolean e = false;
         while (opModeIsActive()){
