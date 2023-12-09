@@ -39,6 +39,7 @@ public class NewRobitsTeleOp extends LinearOpMode {
             if(gamepad1.dpad_down){
                 e=true;
             }
+
             if (e){
                 armMotor.setPower(-1);
             } else {
