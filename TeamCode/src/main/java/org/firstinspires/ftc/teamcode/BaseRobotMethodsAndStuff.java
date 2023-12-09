@@ -24,9 +24,13 @@ public class BaseRobotMethodsAndStuff {
 
     public void putYellow(){
         yellowPixel.scaleRange(0.45,.55);
-        yellowPixel.setPosition(.5);
+
         yellowPixel.setPosition(0);
-        yellowPixel.setPosition(.5);
+    }
+
+    public void retract(){
+        yellowPixel.scaleRange(0.6,.7);
+        yellowPixel.setPosition(1);
     }
 
     public void forward(int ticks){

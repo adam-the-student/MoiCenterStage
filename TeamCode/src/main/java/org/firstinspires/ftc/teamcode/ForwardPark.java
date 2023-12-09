@@ -16,7 +16,7 @@ public class ForwardPark extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-    CVMaster Cam1 = new CVMaster(this, new SpikeZoneDetectionRed());
+    CVMaster Cam1 = new CVMaster(this, new SpikeZoneDetectionBlue());
         BaseRobotMethodsAndStuff robotMethods = new BaseRobotMethodsAndStuff(this);
     Cam1.runPipeline();
     int zone = 2;
@@ -25,6 +25,7 @@ public class ForwardPark extends LinearOpMode {
          zone = Cam1.getZone();
         telemetry.addData("zone", zone);
         telemetry.update();
+        sleep(1000);
     }
     waitForStart();
         Cam1.stopCamera();
@@ -35,10 +36,10 @@ public class ForwardPark extends LinearOpMode {
                 robotMethods.turn(50,1);
                 sleep(500);
                 robotMethods.forward((int)(537.6*-6));
-                robotMethods.turn(45,1);
-                robotMethods.forward((int)(537.6*36));
-                robotMethods.turn(12,1);
-                robotMethods.forward((int)(537.6*2));
+                robotMethods.turn(47,1);
+                robotMethods.forward((int)(537.6*35.75));
+                robotMethods.turn(6,1);
+                robotMethods.forward((int)(537.6*7));
                 robotMethods.putYellow();
                 sleep(1000);
                 robotMethods.forward((int)(537.6*-2));
@@ -49,9 +50,9 @@ public class ForwardPark extends LinearOpMode {
                 sleep(500);
                 robotMethods.forward((int)(537.6*-5));
                 robotMethods.turn(75);
-                robotMethods.forward((int)(537.6*35));
-                robotMethods.turn(30);
-                robotMethods.forward((int)(537.6*2));
+                robotMethods.forward((int)(537.6*35.5));
+                robotMethods.turn(23);
+                robotMethods.forward((int)(537.6*4));
                 robotMethods.putYellow();
                 sleep(1000);
                 robotMethods.forward((int)(-537.6*2));
@@ -63,9 +64,9 @@ public class ForwardPark extends LinearOpMode {
                 robotMethods.turn(-30,.2);
                 sleep(500);
                 robotMethods.forward((int)(537.6*-5.5));
-                robotMethods.turn(125,.5);
-                robotMethods.forward((int)(537.6*31),1);
-                robotMethods.turn(40,.5);
+                robotMethods.turn(120,.5);
+                robotMethods.forward((int)(537.6*32),1);
+                robotMethods.turn(45,.5);
                 sleep(100);
                 robotMethods.forward((int)(537.6*7),.5);
                 robotMethods.putYellow();
@@ -73,5 +74,6 @@ public class ForwardPark extends LinearOpMode {
                 robotMethods.forward((int)(537.6*-2));
                 // auton /\
             }
+            robotMethods.retract();
     }
 }

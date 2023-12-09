@@ -51,7 +51,7 @@ public class Red50Point extends LinearOpMode {
             sleep(500);
             robotMethods.forward((int)(537.6*-3.5),.5);
             robotMethods.turn(-85);
-            robotMethods.forward((int)(537.6*37),.5);
+            robotMethods.forward((int)(537.6*36),.5);
             robotMethods.turn(-7);
             robotMethods.forward((int)(537.6),.7);
             robotMethods.putYellow();
@@ -64,7 +64,7 @@ public class Red50Point extends LinearOpMode {
             sleep(500);
             robotMethods.forward((int)(537.6*-5.5));
             robotMethods.turn(-115,.5);
-            robotMethods.forward((int)(537.6*30),.9);
+            robotMethods.forward((int)(537.6*29),.9);
             robotMethods.turn(-25,.5);
             sleep(100);
             robotMethods.forward((int)(537.6*10.8),.5);
