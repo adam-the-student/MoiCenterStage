@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.OpenCV.Workspasce;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.OpenCV.TransitionPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -28,11 +26,11 @@ public class SpikeZoneDetectionRed extends TransitionPipeline {
     // backlog of frames to average out to reduce noise
     ArrayList<double[]> frameList;
     // these are public static to be tuned in the dashboard
-    public static double LowH = 5.0;
+    public static double LowH = 0.0;
     public static double LowS = 126.1;
-    public static double LowV = 200;
-    public static double HighH = 26.9;
-    public static double HighS = 255;
+    public static double LowV = 93.5;
+    public static double HighH = 128.9;
+    public static double HighS = 232.3;
     public static double HighV = 255;
 
     Mat hierarchy = new Mat();

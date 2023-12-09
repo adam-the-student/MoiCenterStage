@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.OpenCV;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.OpenCV.Workspasce.TransitionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -50,7 +51,7 @@ public class CVMaster {
                  */
                 webcam.setPipeline(openCvPipeline);
                 //start streaming the camera
-                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(176, 144, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
