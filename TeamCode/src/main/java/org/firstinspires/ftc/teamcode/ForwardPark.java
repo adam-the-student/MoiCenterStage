@@ -34,11 +34,12 @@ public class ForwardPark extends LinearOpMode {
         robotMethods.forward((int)(537.6*25),.5);
             if (zone == 1){
                 robotMethods.turn(50,1);
+                robotMethods.forward((int)(537.6),.5);
                 sleep(500);
                 robotMethods.forward((int)(537.6*-6));
-                robotMethods.turn(47,1);
+                robotMethods.turn(45,1);
                 robotMethods.forward((int)(537.6*35.75));
-                robotMethods.turn(6,1);
+                robotMethods.turn(10,1);
                 robotMethods.forward((int)(537.6*7));
                 robotMethods.putYellow();
                 sleep(1000);
@@ -49,9 +50,9 @@ public class ForwardPark extends LinearOpMode {
                 robotMethods.forward((int)(537.6*3));
                 sleep(500);
                 robotMethods.forward((int)(537.6*-5));
-                robotMethods.turn(75);
-                robotMethods.forward((int)(537.6*35.5));
-                robotMethods.turn(23);
+                robotMethods.turn(74);
+                robotMethods.forward((int)(537.6*35.5),.5);
+                robotMethods.turn(24);
                 robotMethods.forward((int)(537.6*4));
                 robotMethods.putYellow();
                 sleep(1000);
@@ -74,6 +75,5 @@ public class ForwardPark extends LinearOpMode {
                 robotMethods.forward((int)(537.6*-2));
                 // auton /\
             }
-            robotMethods.retract();
     }
 }

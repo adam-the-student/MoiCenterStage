@@ -9,12 +9,9 @@ import org.firstinspires.ftc.teamcode.OpenCV.CVMaster;
 import org.firstinspires.ftc.teamcode.OpenCV.Workspasce.SpikeZoneDetectionRed;
 
 @Autonomous
-public class Red50Point extends LinearOpMode {
-    DcMotor motor1,motor2, armMotor;
-    Servo yellowPixel;
+public class PurplePixelRed extends LinearOpMode {
     @Override
     public void runOpMode() {
-        yellowPixel = hardwareMap.get(Servo.class,"yellowPixel");
 
         CVMaster Cam1 = new CVMaster(this, new SpikeZoneDetectionRed());
         BaseRobotMethodsAndStuff robotMethods = new BaseRobotMethodsAndStuff(this);
@@ -38,46 +35,19 @@ public class Red50Point extends LinearOpMode {
             robotMethods.turn(-20,.5);
             sleep(500);
             robotMethods.forward((int)(537.6*-6));
-            robotMethods.turn(-42,1);
-            robotMethods.forward((int)(537.6*40),.5);
-            robotMethods.turn(10,1);
-            robotMethods.forward((int)(537.6*2),.6);
-            robotMethods.putYellow();
-            sleep(1000);
-            robotMethods.forward((int)(537.6*-2));
             // auton code
         }
         else if (zone == 2) {
             robotMethods.forward((int)(537.6*3));
             sleep(500);
-            robotMethods.forward((int)(537.6*-3.5),1);
-            robotMethods.turn(-88);
-            robotMethods.forward((int)(537.6*38),1);
-            robotMethods.turn(-6);
-            robotMethods.forward((int)(537.6),.9);
-            robotMethods.putYellow();
-            sleep(1000);
-            robotMethods.forward((int)(-537.6*2));
+            robotMethods.forward((int)(537.6*-3.5),.5);
             // auton /\
         }
         else if (zone==1){
             robotMethods.turn(50,.2);
             sleep(500);
             robotMethods.forward((int)(537.6*-5.5));
-            robotMethods.turn(-115,.5);
-            robotMethods.forward((int)(537.6*29),1);
-            robotMethods.turn(-30,.5);
-            sleep(100);
-            robotMethods.forward((int)(537.6*10.8),1);
-            robotMethods.putYellow();
-            sleep(1000);
-            robotMethods.forward((int)(537.6*-2));
             // auton /\
         }
-        robotMethods.forward((int)(537.6*-3));
-        robotMethods.turn(-90);
-        yellowPixel.scaleRange(.6,.7);
-        yellowPixel.setPosition(1);
-        robotMethods.forward((int)(537.6*20));
     }
 }
