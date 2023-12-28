@@ -462,7 +462,7 @@ class LateralPushTest(val dvf: DriveViewFactory) : LinearOpMode() {
 class ManualFeedforwardTuner(val dvf: DriveViewFactory) : LinearOpMode() {
     companion object {
         @JvmField
-        var DISTANCE = 64.0
+        var DISTANCE = 48.0
     }
 
     enum class Mode {
