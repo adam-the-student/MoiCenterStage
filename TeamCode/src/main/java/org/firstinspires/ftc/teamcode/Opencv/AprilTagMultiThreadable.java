@@ -31,10 +31,10 @@ public class AprilTagMultiThreadable implements Runnable{
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
     // You will need to do your own calibration for other configurations!
-    double fx = 1150.2178512391217;
-    double fy = 1137.1023715270699;
-    double cx = 620.9005800934796;
-    double cy = 336.6179549129202;
+    double fx = 816.434;
+    double fy = 816.434;
+    double cx = 337.687;
+    double cy = 234.308;
 
     // UNITS ARE METERS
     double tagsize;
