@@ -59,7 +59,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *     Make sure that your files ONLY use lower-case characters, and have no spaces or special characters other than underscore.
  *
  *     The name you give your .wav files will become the resource ID for these sounds.
- *     eg:  BPA.wav becomes R.raw.BPA.wav
+ *     eg:  Gold.wav becomes R.raw.Gold.wav
  *
  *     If you wish to use the sounds provided for this sample, they are located in:
  *     <project root>/FtcRobotController/src/main/res/raw
@@ -86,7 +86,7 @@ public class ConceptSoundsASJava extends LinearOpMode {
 
         // Determine Resource IDs for sounds built into the RC application.
         int silverSoundID = hardwareMap.appContext.getResources().getIdentifier("silver", "raw", hardwareMap.appContext.getPackageName());
-        int goldSoundID   = hardwareMap.appContext.getResources().getIdentifier("BPA.wav",   "raw", hardwareMap.appContext.getPackageName());
+        int goldSoundID   = hardwareMap.appContext.getResources().getIdentifier("Gold.wav",   "raw", hardwareMap.appContext.getPackageName());
 
         // Determine if sound resources are found.
         // Note: Preloading is NOT required, but it's a good way to verify all your sounds are available before you run.
@@ -97,7 +97,7 @@ public class ConceptSoundsASJava extends LinearOpMode {
             silverFound = SoundPlayer.getInstance().preload(hardwareMap.appContext, silverSoundID);
 
         // Display sound status
-        telemetry.addData("BPA.wav resource",   goldFound ?   "Found" : "NOT found\n Add BPA.wav.wav to /src/main/res/raw" );
+        telemetry.addData("Gold.wav resource",   goldFound ?   "Found" : "NOT found\n Add Gold.wav.wav to /src/main/res/raw" );
         telemetry.addData("silver resource", silverFound ? "Found" : "Not found\n Add silver.wav to /src/main/res/raw" );
 
         // Wait for the game to start (driver presses PLAY)

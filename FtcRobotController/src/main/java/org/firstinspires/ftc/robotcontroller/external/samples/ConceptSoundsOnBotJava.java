@@ -47,14 +47,14 @@ import java.io.File;
  * Note: Time should be allowed for sounds to complete before playing other sounds.
  *
  *  To play a new sound, you will need to copy the .wav files to the phone, and then provide the full path to them as part of your OpMode.
- *  This is done in this sample for the two sound files.  silver.wav and BPA.wav
+ *  This is done in this sample for the two sound files.  silver.wav and Gold.wav
  *
  *  You can put the files in a variety of soundPaths, but we recommend you put them in the /FIRST/blocks/sounds folder.
  *  Your OpModes will have guaranteed access to this folder, and you can transfer files into this folder using the BLOCKS web page.
  *  --  There is a link called "sounds" on the right hand side of the color bar on the BLOCKS page that can be used to send sound files to this folder by default.
  *  Or you can use Windows File Manager, or ADB to transfer the sound files
  *
- *  To get full use of THIS sample, you will need to copy two sound file called silver.wav and BPA.wav to /FIRST/blocks/sounds on the RC phone.
+ *  To get full use of THIS sample, you will need to copy two sound file called silver.wav and Gold.wav to /FIRST/blocks/sounds on the RC phone.
  *  They can be located here:
  *      https://github.com/ftctechnh/ftc_app/tree/master/FtcRobotController/src/main/res/raw/gold.wav
  *      https://github.com/ftctechnh/ftc_app/tree/master/FtcRobotController/src/main/res/raw/silver.wav
@@ -66,7 +66,7 @@ public class ConceptSoundsOnBotJava extends LinearOpMode {
 
     // Point to sound files on the phone's drive
     private String soundPath = "/FIRST/blocks/sounds";
-    private File goldFile   = new File("/sdcard" + soundPath + "/BPA.wav.wav");
+    private File goldFile   = new File("/sdcard" + soundPath + "/Gold.wav.wav");
     private File silverFile = new File("/sdcard" + soundPath + "/silver.wav");
 
     // Declare OpMode members.
@@ -84,7 +84,7 @@ public class ConceptSoundsOnBotJava extends LinearOpMode {
         boolean silverFound = silverFile.exists();
 
         // Display sound status
-        telemetry.addData("BPA.wav sound",   goldFound ?   "Found" : "NOT Found \nCopy BPA.wav to " + soundPath  );
+        telemetry.addData("Gold.wav sound",   goldFound ?   "Found" : "NOT Found \nCopy Gold.wav to " + soundPath  );
         telemetry.addData("silver sound", silverFound ? "Found" : "NOT Found \nCopy silver.wav to " + soundPath );
 
         // Wait for the game to start (driver presses PLAY)
