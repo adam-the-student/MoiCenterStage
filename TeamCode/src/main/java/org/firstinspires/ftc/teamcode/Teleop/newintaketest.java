@@ -19,7 +19,7 @@ public class newintaketest extends LinearOpMode {
         outTake = hardwareMap.get(Servo.class, "outTake");
 
         waitForStart();
-while (opModeIsActive()){
+    while (opModeIsActive()){
         if (gamepad1.left_trigger != 0) {
             leftspin.setPower(-0.3);
             rightspin.setPower(0.3);

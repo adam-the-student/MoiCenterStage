@@ -115,6 +115,7 @@ public class M3TeleOp extends LinearOpMode {
             if (gamepad2.right_bumper&& gamepad2.left_bumper){
                 drone.setPosition(1);
             }
+
         }
     }
 }

@@ -79,9 +79,9 @@ public class YellowAndPurpleBlue extends LinearOpMode {
             baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6));
         } else if (spikeZone == 2){
             baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
-            baseController((int) (TICKS_PER_INCH * 13.6 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.6 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.6 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.6 * Math.PI / 2));
-            baseController((int)(TICKS_PER_INCH*-40),(int)(TICKS_PER_INCH*40),(int)(TICKS_PER_INCH*-40),(int)(TICKS_PER_INCH*40));
-//            baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*6));
+            baseController((int) (TICKS_PER_INCH * 14 * Math.PI / 2), (int) (TICKS_PER_INCH * 14 * Math.PI / 2), (int) (TICKS_PER_INCH * 14 * Math.PI / 2), (int) (TICKS_PER_INCH * 14 * Math.PI / 2));
+            baseController((int)(TICKS_PER_INCH*-38),(int)(TICKS_PER_INCH*38),(int)(TICKS_PER_INCH*-38),(int)(TICKS_PER_INCH*38));
+            baseController((int)(TICKS_PER_INCH*1),(int)(TICKS_PER_INCH*1),(int)(TICKS_PER_INCH*-1),(int)(TICKS_PER_INCH*-1));
 
         } else {
             baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
@@ -92,12 +92,12 @@ public class YellowAndPurpleBlue extends LinearOpMode {
 
 //        if(spikeZone!=3){baseController((int)(TICKS_PER_INCH*(leftDistance.getDistance(DistanceUnit.INCH)-1.5)),(int)(TICKS_PER_INCH*(rightDistance.getDistance(DistanceUnit.INCH)-1.5)),(int)(TICKS_PER_INCH*(leftDistance.getDistance(DistanceUnit.INCH)-1.5)),(int)(TICKS_PER_INCH*(rightDistance.getDistance(DistanceUnit.INCH)-1.5)));}
 
-        baseController((int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3));
+        baseController((int)(TICKS_PER_INCH*-2),(int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2),(int)(TICKS_PER_INCH*2));
 
         yellow.setPosition(.45);
         sleep(750);
         baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
-        // yellow.setPosition(.9);
+         yellow.setPosition(.9);
         baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
     }
     public void motorController(DcMotor motor, int targetDestination, int startingPos){
