@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "M3 teleop")
 public class M3TeleOp extends LinearOpMode {
     private DcMotor motor1,motor2,motor3,motor4, leftRigging, rightRigging, slideRig, wormDrive;
-    private Servo leftHook, rightHook;
+    private Servo leftHook, rightHook, drone;
     private CRServo leftClaw, rightClaw, wrist;
     @Override
     public void runOpMode(){
@@ -19,7 +19,7 @@ public class M3TeleOp extends LinearOpMode {
         motor3 = hardwareMap.get(DcMotor.class , "backLeft");
         motor4 = hardwareMap.get(DcMotor.class , "backRight");
         slideRig = hardwareMap.get(DcMotor.class , "slideRig");
-        wormDrive = hardwareMap.get(DcMotor.class , "slideAngle");
+        wormDrive = hardwareMap.get(DcMotor.class , "wormDrive");
         leftRigging = hardwareMap.get(DcMotor.class, "leftRig");
         rightRigging = hardwareMap.get(DcMotor.class, "rightRig");
         leftHook = hardwareMap.get(Servo.class, "leftHook");
@@ -27,6 +27,7 @@ public class M3TeleOp extends LinearOpMode {
         leftClaw = hardwareMap.get(CRServo.class, "leftClaw");
         rightClaw = hardwareMap.get(CRServo.class, "rightClaw");
         wrist = hardwareMap.get(CRServo.class, "wrist");
+        drone = hardwareMap.get(Servo.class, "drone");
 
         waitForStart();
 
@@ -109,6 +110,10 @@ public class M3TeleOp extends LinearOpMode {
                 wrist.setPower(.2);
             } else {
                 wrist.setPower(0);
+            }
+
+            if (gamepad2.right_bumper&& gamepad2.left_bumper){
+                drone.setPosition(1);
             }
         }
     }

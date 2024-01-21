@@ -13,15 +13,21 @@ public class EncTest extends LinearOpMode {
         testMotor = hardwareMap.get(DcMotor.class, "testMotor");
         waitForStart();
 
-        testMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        testMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        testMotor.setTargetPosition(10000);
-        testMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            testMotor.setPower(.5);
+            sleep(2000);
+            testMotor.setPower(1);
+        sleep(2000);
+        testMotor.setPower(0);
 
-        while (opModeIsActive()) {
-            telemetry.addData("Pos1: ", testMotor.getCurrentPosition());
-            telemetry.update();
-        }
+//        testMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        testMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        testMotor.setTargetPosition(10000);
+//        testMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        while (opModeIsActive()) {
+//            telemetry.addData("Pos1: ", testMotor.getCurrentPosition());
+//            telemetry.update();
+//        }
     }
     public void motorController(DcMotor motor, int targetDestination, int startingPos){
 

@@ -80,11 +80,6 @@ public class SpikeZoneDetectionBlue extends TransitionPipeline {
         for (MatOfPoint contour : contours) {
             boundingRect = Imgproc.boundingRect(contour);
 
-            if (boundingRect.area()<largestArea){
-                continue;
-            }
-            largestArea = boundingRect.area();
-
             // Calculate the center of the bounding rectangle
             Point center = new Point(boundingRect.x + (double)boundingRect.width / 2, boundingRect.y + (double)boundingRect.height / 2);
 
@@ -109,11 +104,7 @@ public class SpikeZoneDetectionBlue extends TransitionPipeline {
 
         return mat;
     }
-
-    public int LENGTH() {
-        return (int) Core.norm(new MatOfPoint2f(start), new MatOfPoint2f(end));
-    }
-
+    
     public byte getData() {
         return (byte)(spikeZone+1);
     }

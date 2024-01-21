@@ -28,6 +28,7 @@ public class YellowAndPurpleRed extends LinearOpMode {
         CvMaster<SpikeZoneDetectionRed> cam1 = new CvMaster<>(this, new SpikeZoneDetectionRed());
         cam1.runPipeline();
         byte spikeZone=0;
+        yellow.setPosition(.8);
         sleep(100);
 
         while(!opModeIsActive()){
@@ -46,37 +47,36 @@ public class YellowAndPurpleRed extends LinearOpMode {
             baseController((int) (TICKS_PER_INCH * -30), (int) (TICKS_PER_INCH * 30), (int) (TICKS_PER_INCH * -30), (int) (TICKS_PER_INCH * 30));
         } else {
             baseController((int)(TICKS_PER_INCH*-30),(int)(TICKS_PER_INCH*30),(int)(TICKS_PER_INCH*-30),(int)(TICKS_PER_INCH*30));
-            if (spikeZone==1){
-                baseController((int)(TICKS_PER_INCH*13.5 * Math.PI / 2),(int)(TICKS_PER_INCH*13.5 * Math.PI / 2),(int)(TICKS_PER_INCH*13.5 * Math.PI / 2),(int)(TICKS_PER_INCH*13.5 * Math.PI / 2));
-            } else {
+            if (spikeZone==3){
                 baseController((int)(-TICKS_PER_INCH*13.5 * Math.PI/2),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2));
+            } else {
+                baseController((int)(TICKS_PER_INCH*13.5 * Math.PI / 2),(int)(TICKS_PER_INCH*13.5 * Math.PI / 2),(int)(TICKS_PER_INCH*13.5 * Math.PI / 2),(int)(TICKS_PER_INCH*13.5 * Math.PI / 2));
             }
         }
         baseController((int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*5),(int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*5));
         baseController((int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2),(int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2));
 
-        if (spikeZone == 1){
-            baseController((int)(TICKS_PER_INCH*20),(int)(TICKS_PER_INCH*-20),(int)(TICKS_PER_INCH*20),(int)(TICKS_PER_INCH*-20));
-            baseController((int)(TICKS_PER_INCH*13.5 * Math.PI * 1.25),(int)(TICKS_PER_INCH*13.5 * Math.PI * 1.25),(int)(TICKS_PER_INCH*13.5 * Math.PI * 1.25),(int)(TICKS_PER_INCH*13.5 * Math.PI * 1.25));
-            baseController((int)(TICKS_PER_INCH*-15),(int)(TICKS_PER_INCH*15),(int)(TICKS_PER_INCH*-15),(int)(TICKS_PER_INCH*15));
-            baseController(-(int)(TICKS_PER_INCH*13.5 * Math.PI * .2),-(int)(TICKS_PER_INCH*13.5 * Math.PI * .2),-(int)(TICKS_PER_INCH*13.5 * Math.PI * .2),-(int)(TICKS_PER_INCH*13.5 * Math.PI * .2));
-            baseController((int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8));
-        } else if (spikeZone == 2){
-            baseController((int)(TICKS_PER_INCH*5),(int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*5),(int)(TICKS_PER_INCH*-5));
-            baseController((int)(-TICKS_PER_INCH*13.5 * Math.PI/2*1.05),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2*1.05),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2*1.05),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2*1.05));
-            baseController((int)(TICKS_PER_INCH*-39),(int)(TICKS_PER_INCH*39),(int)(TICKS_PER_INCH*-39),(int)(TICKS_PER_INCH*39));
-        } else {
+        if (spikeZone == 3){
             baseController((int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2),(int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2));
             baseController((int)(-TICKS_PER_INCH*13.5 * Math.PI/2*.1),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2*.1),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2*.1),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2*.1));
             baseController((int)(TICKS_PER_INCH*-36),(int)(TICKS_PER_INCH*36),(int)(TICKS_PER_INCH*-36),(int)(TICKS_PER_INCH*36));
-
+        } else if (spikeZone == 2){
+            baseController((int)(TICKS_PER_INCH*4.5),(int)(TICKS_PER_INCH*-4.5),(int)(TICKS_PER_INCH*4.5),(int)(TICKS_PER_INCH*-4.5));
+            baseController((int)(-TICKS_PER_INCH*13.5 * Math.PI/2*1.1),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2*1.1),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2*1.1),(int)(-TICKS_PER_INCH*13.5 * Math.PI/2*1.1));
+            baseController((int)(TICKS_PER_INCH*-43),(int)(TICKS_PER_INCH*43),(int)(TICKS_PER_INCH*-43),(int)(TICKS_PER_INCH*43));
+        } else {
+            baseController((int)(TICKS_PER_INCH*20),(int)(TICKS_PER_INCH*-20),(int)(TICKS_PER_INCH*20),(int)(TICKS_PER_INCH*-20));
+            baseController((int)(TICKS_PER_INCH*13.5 * Math.PI * 1.25),(int)(TICKS_PER_INCH*13.5 * Math.PI * 1.25),(int)(TICKS_PER_INCH*13.5 * Math.PI * 1.25),(int)(TICKS_PER_INCH*13.5 * Math.PI * 1.25));
+            baseController((int)(TICKS_PER_INCH*-14),(int)(TICKS_PER_INCH*14),(int)(TICKS_PER_INCH*-14),(int)(TICKS_PER_INCH*14));
+            baseController(-(int)(TICKS_PER_INCH*13.5 * Math.PI * .2),-(int)(TICKS_PER_INCH*13.5 * Math.PI * .2),-(int)(TICKS_PER_INCH*13.5 * Math.PI * .2),-(int)(TICKS_PER_INCH*13.5 * Math.PI * .2));
+            baseController((int)(TICKS_PER_INCH*-10),(int)(TICKS_PER_INCH*10),(int)(TICKS_PER_INCH*-10),(int)(TICKS_PER_INCH*10));
         }
 
-        yellow.setPosition(1);
+        yellow.setPosition(.45);
         sleep(1000);
         baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
-        yellow.setPosition(.7);
-        baseController(-(int)(TICKS_PER_INCH*4),-(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*4));
+        yellow.setPosition(.8);
+        baseController(-(int)(TICKS_PER_INCH*16),-(int)(TICKS_PER_INCH*16),(int)(TICKS_PER_INCH*16),(int)(TICKS_PER_INCH*16));
 
     }
     public void motorController(DcMotor motor, int targetDestination, int startingPos){
@@ -121,7 +121,7 @@ public class YellowAndPurpleRed extends LinearOpMode {
         motor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while ((Math.abs(error1) > 30)||(Math.abs(error2) > 30)||(Math.abs(error3) > 30)||(Math.abs(error4) > 30)) { // <= change this value for your error range /  reliability.
+        while ((Math.abs(error1) > 25)||(Math.abs(error2) > 25)||(Math.abs(error3) > 25)||(Math.abs(error4) > 25)) { // <= change this value for your error range /  reliability.
             motor1.setPower((motor1.getPower() + (error1 / targetDestination1)) / 2);
             error1 = motor1.getTargetPosition()-motor1.getCurrentPosition();
             motor2.setPower((motor2.getPower() + (error2 / targetDestination2)) / 2);

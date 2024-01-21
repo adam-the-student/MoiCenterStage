@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -240,7 +241,7 @@ public class ATAA extends LinearOpMode
      */
     private void initAprilTag() {
         // Create the AprilTag processor by using a builder.
-        aprilTag = new AprilTagProcessor.Builder().build();
+        aprilTag = new AprilTagProcessor.Builder().setLensIntrinsics(816.434 , 816.434 , 337.687, 234.308).build();
 
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
         // eg: Some typical detection data using a Logitech C920 WebCam
@@ -295,7 +296,7 @@ public class ATAA extends LinearOpMode
                 exposureControl.setMode(ExposureControl.Mode.Manual);
                 sleep(50);
             }
-            exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
+            exposureControl.setExposure(exposureMS, TimeUnit.MILLISECONDS);
             sleep(20);
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
             gainControl.setGain(gain);

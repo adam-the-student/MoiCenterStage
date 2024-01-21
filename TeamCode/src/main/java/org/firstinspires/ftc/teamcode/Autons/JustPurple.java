@@ -1,27 +1,18 @@
 package org.firstinspires.ftc.teamcode.Autons;
 
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Opencv.CvMaster;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionBlue;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionRed;
 
-import java.util.concurrent.TimeUnit;
-
-@Autonomous(name = "2' + 0 Blue BackDrop")
-public class YellowAndPurpleBlue extends LinearOpMode {
+@Autonomous(name = "purpleBLue")
+public class JustPurple extends LinearOpMode {
     DcMotor motor1, motor2, motor3, motor4, slideMotor, slideAngle;
     Servo yellow;
-    RevColorSensorV3 leftDistance, rightDistance;
     private final double TICKS_PER_REV = 537.7;
     private final double TICKS_PER_INCH = TICKS_PER_REV/11.87;
 
@@ -34,24 +25,21 @@ public class YellowAndPurpleBlue extends LinearOpMode {
         slideMotor = hardwareMap.get(DcMotor.class, "slideRig");
         slideAngle = hardwareMap.get(DcMotor.class, "wormDrive");
         yellow = hardwareMap.get(Servo.class,"yellowPixel");
-        leftDistance = hardwareMap.get(RevColorSensorV3.class,"leftDistance");
-        rightDistance = hardwareMap.get(RevColorSensorV3.class,"rightDistance");
 
         CvMaster<SpikeZoneDetectionBlue> cam1 = new CvMaster<>(this, new SpikeZoneDetectionBlue());
         cam1.runPipeline();
-        byte spikeZone=1;
+        byte spikeZone=0;
         yellow.setPosition(.8);
         sleep(100);
 
         while(!opModeIsActive()){
             spikeZone = (byte)cam1.getZone();
             telemetry.addData("Camera 1 Zone: ", spikeZone);
-            telemetry.addData("Left distance (INCHES): ", leftDistance.getDistance(DistanceUnit.INCH));
-            telemetry.addData("Right distance (INCHES): ", rightDistance.getDistance(DistanceUnit.INCH));
             telemetry.update();
-            sleep(500);
+            sleep(200);
         }
         cam1.stopCamera();
+
         //537.7 ticks per rev
         //13.5 track width
         // 13.5 * Math.PI / 2
@@ -59,46 +47,14 @@ public class YellowAndPurpleBlue extends LinearOpMode {
         baseController((int) (TICKS_PER_INCH * -32), (int) (TICKS_PER_INCH * 32), (int) (TICKS_PER_INCH * -32), (int) (TICKS_PER_INCH * 32));
         if (spikeZone != 2) {
             if (spikeZone == 3) {
-                baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
                 baseController((int) (-TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (-TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (-TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (-TICKS_PER_INCH * 13.5 * Math.PI / 2));
-                baseController((int)(TICKS_PER_INCH*-2.5),(int)(TICKS_PER_INCH*2.5),(int)(TICKS_PER_INCH*-2.5),(int)(TICKS_PER_INCH*2.5));
             } else {
                 baseController((int) (TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.5 * Math.PI / 2));
-                baseController((int)(TICKS_PER_INCH*-1),(int)(TICKS_PER_INCH*1),(int)(TICKS_PER_INCH*-1),(int)(TICKS_PER_INCH*1));
             }
         }
-        baseController((int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3));
-        baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
+        baseController((int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4));
+        baseController((int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2),(int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2));
 
-        if (spikeZone == 3){
-            baseController((int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2),(int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2));
-            baseController((int)(TICKS_PER_INCH*13.5 * Math.PI * -.1),(int)(TICKS_PER_INCH*13.5 * Math.PI * -.1),(int)(TICKS_PER_INCH*13.5 * Math.PI * -.1),(int)(TICKS_PER_INCH*13.5 * Math.PI * -.1));
-            baseController((int)(TICKS_PER_INCH*36),(int)(TICKS_PER_INCH*-36),(int)(TICKS_PER_INCH*36),(int)(TICKS_PER_INCH*-36));
-            baseController((int)(TICKS_PER_INCH*13.5 * Math.PI*1.15),(int)(TICKS_PER_INCH*13.5 * Math.PI*1.15),(int)(TICKS_PER_INCH*13.5 * Math.PI*1.15),(int)(TICKS_PER_INCH*13.5 * Math.PI*1.15));
-            baseController((int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*5),(int)(TICKS_PER_INCH*5));
-            baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6));
-        } else if (spikeZone == 2){
-            baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
-            baseController((int) (TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.5 * Math.PI / 2));
-            baseController((int)(TICKS_PER_INCH*-40),(int)(TICKS_PER_INCH*40),(int)(TICKS_PER_INCH*-40),(int)(TICKS_PER_INCH*40));
-            baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*6));
-
-        } else {
-            baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
-            baseController((int)(TICKS_PER_INCH*13),(int)(TICKS_PER_INCH*13),(int)(TICKS_PER_INCH*-13),(int)(TICKS_PER_INCH*-13));
-            baseController((int)(TICKS_PER_INCH*-42),(int)(TICKS_PER_INCH*42),(int)(TICKS_PER_INCH*-42),(int)(TICKS_PER_INCH*42));
-            baseController((int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*8));
-        }
-
-        if(spikeZone!=3){baseController((int)(TICKS_PER_INCH*(leftDistance.getDistance(DistanceUnit.INCH)-1.5)),(int)(TICKS_PER_INCH*(rightDistance.getDistance(DistanceUnit.INCH)-1.5)),(int)(TICKS_PER_INCH*(leftDistance.getDistance(DistanceUnit.INCH)-1.5)),(int)(TICKS_PER_INCH*(rightDistance.getDistance(DistanceUnit.INCH)-1.5)));}
-
-        baseController((int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3));
-
-        yellow.setPosition(.45);
-        sleep(750);
-        baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
-        yellow.setPosition(.9);
-        baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
     }
     public void motorController(DcMotor motor, int targetDestination, int startingPos){
 
@@ -142,7 +98,7 @@ public class YellowAndPurpleBlue extends LinearOpMode {
         motor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while ((Math.abs(error1) > 30)||(Math.abs(error2) > 30)||(Math.abs(error3) > 30)||(Math.abs(error4) > 30)) { // <= change this value for your error range /  reliability.
+        while ((Math.abs(error1) > 25)||(Math.abs(error2) > 25)||(Math.abs(error3) > 25)||(Math.abs(error4) > 25)) { // <= change this value for your error range /  reliability.
             motor1.setPower((motor1.getPower() + (error1 / targetDestination1)) / 2);
             error1 = motor1.getTargetPosition()-motor1.getCurrentPosition();
             motor2.setPower((motor2.getPower() + (error2 / targetDestination2)) / 2);

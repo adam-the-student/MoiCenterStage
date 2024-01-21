@@ -55,7 +55,7 @@ public class CvMaster<T extends TransitionPipeline> {
                  */
                 webcam.setPipeline(openCvPipeline);
                 //start streaming the camera
-                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
