@@ -26,7 +26,7 @@ public class JustPurple extends LinearOpMode {
         slideAngle = hardwareMap.get(DcMotor.class, "wormDrive");
         yellow = hardwareMap.get(Servo.class,"yellowPixel");
 
-        CvMaster<SpikeZoneDetectionBlue> cam1 = new CvMaster<>(this, new SpikeZoneDetectionBlue());
+        CvMaster<SpikeZoneDetectionRed> cam1 = new CvMaster<>(this, new SpikeZoneDetectionRed());
         cam1.runPipeline();
         byte spikeZone=0;
         yellow.setPosition(.8);

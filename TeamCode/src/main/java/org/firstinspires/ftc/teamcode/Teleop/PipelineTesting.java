@@ -14,7 +14,7 @@ public class PipelineTesting extends LinearOpMode {
     LinearOpMode linearOpMode = this;
     @Override
     public void runOpMode(){
-        CvMaster cam1 = new CvMaster(linearOpMode, new SpikeZoneDetectionRed());
+        CvMaster<SpikeZoneDetectionBlue> cam1 = new CvMaster<>(linearOpMode, new SpikeZoneDetectionBlue());
         cam1.runPipeline();
         waitForStart();
 

@@ -1,29 +1,19 @@
 package org.firstinspires.ftc.teamcode.Autons;
 
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Opencv.CvMaster;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionBlue;
-import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionRed;
 
-import java.util.concurrent.TimeUnit;
-
-@Autonomous(name = "2' + 0 Red BackDrop")
-public class YellowAndPurpleRed extends LinearOpMode {
+@Autonomous(name = "2' + 0 Blue Audience")
+public class BlueFarSideYellow extends LinearOpMode {
     DcMotor motor1, motor2, motor3, motor4, slideMotor, slideAngle;
     Servo yellow;
     CRServo wrist;
-    RevColorSensorV3 leftDistance, rightDistance;
     private final double TICKS_PER_REV = 537.7;
     private final double TICKS_PER_INCH = TICKS_PER_REV/11.87;
 
@@ -38,10 +28,10 @@ public class YellowAndPurpleRed extends LinearOpMode {
         yellow = hardwareMap.get(Servo.class,"yellowPixel");
         wrist = hardwareMap.get(CRServo.class, "wrist");
 
-        CvMaster<SpikeZoneDetectionRed> cam1 = new CvMaster<>(this, new SpikeZoneDetectionRed());
+        CvMaster<SpikeZoneDetectionBlue> cam1 = new CvMaster<>(this, new SpikeZoneDetectionBlue());
         cam1.runPipeline();
         byte spikeZone=1;
-        yellow.setPosition(.8);
+        yellow.setPosition(.9);
         sleep(100);
 
         while(!opModeIsActive()){
@@ -59,41 +49,42 @@ public class YellowAndPurpleRed extends LinearOpMode {
         // 13.5 * Math.PI / 2
 
         if (spikeZone==2){
-            baseController((int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33),(int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33));
-            baseController((int)(TICKS_PER_INCH*7),(int)(TICKS_PER_INCH*-7),(int)(TICKS_PER_INCH*7),(int)(TICKS_PER_INCH*-7));
-            baseController((int)(TICKS_PER_INCH*Math.PI*-14/2),(int)(TICKS_PER_INCH*Math.PI*-14/2),(int)(TICKS_PER_INCH*Math.PI*-14/2),(int)(TICKS_PER_INCH*Math.PI*-14/2));
-            baseController((int)(TICKS_PER_INCH*-39),(int)(TICKS_PER_INCH*39),(int)(TICKS_PER_INCH*-39),(int)(TICKS_PER_INCH*39));
-            baseController((int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*-6));
-        } else if (spikeZone==3){
+            baseController((int)(TICKS_PER_INCH*-45),(int)(TICKS_PER_INCH*31),(int)(TICKS_PER_INCH*-31),(int)(TICKS_PER_INCH*45));
+            baseController((int)(TICKS_PER_INCH*Math.PI*14*.5),(int)(TICKS_PER_INCH*Math.PI*14*.5),(int)(TICKS_PER_INCH*Math.PI*14*.5),(int)(TICKS_PER_INCH*Math.PI*14*.5));
+            baseController((int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4));
+            baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
+            sleep(3000);
+            baseController((int)(TICKS_PER_INCH*-16),(int)(TICKS_PER_INCH*-16),(int)(TICKS_PER_INCH*16),(int)(TICKS_PER_INCH*16));
+            baseController((int)(TICKS_PER_INCH*-88),(int)(TICKS_PER_INCH*88),(int)(TICKS_PER_INCH*-88),(int)(TICKS_PER_INCH*88));
+            baseController((int)(TICKS_PER_INCH*30),(int)(TICKS_PER_INCH*30),(int)(TICKS_PER_INCH*-30),(int)(TICKS_PER_INCH*-30));
             baseController((int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8));
-            baseController((int)(TICKS_PER_INCH*-14),(int)(TICKS_PER_INCH*-14),(int)(TICKS_PER_INCH*14),(int)(TICKS_PER_INCH*14));
-            baseController((int)(TICKS_PER_INCH*-20),(int)(TICKS_PER_INCH*20),(int)(TICKS_PER_INCH*-20),(int)(TICKS_PER_INCH*20));
-            baseController((int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*-8));
-            baseController((int)(TICKS_PER_INCH*Math.PI*-14/2),(int)(TICKS_PER_INCH*Math.PI*-14/2),(int)(TICKS_PER_INCH*Math.PI*-14/2),(int)(TICKS_PER_INCH*Math.PI*-14/2));
-            baseController((int)(TICKS_PER_INCH*-28),(int)(TICKS_PER_INCH*28),(int)(TICKS_PER_INCH*-28),(int)(TICKS_PER_INCH*28));
-            baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*6));
-        } else {
-            baseController((int)(TICKS_PER_INCH*-29),(int)(TICKS_PER_INCH*29),(int)(TICKS_PER_INCH*-29),(int)(TICKS_PER_INCH*29));
-            baseController((int)(TICKS_PER_INCH*Math.PI*14/2),(int)(TICKS_PER_INCH*Math.PI*14/2),(int)(TICKS_PER_INCH*Math.PI*14/2),(int)(TICKS_PER_INCH*Math.PI*14/2));
+        } else if (spikeZone==1){
+            baseController((int)(TICKS_PER_INCH*-30),(int)(TICKS_PER_INCH*30),(int)(TICKS_PER_INCH*-30),(int)(TICKS_PER_INCH*30));
+            baseController((int)(TICKS_PER_INCH*Math.PI*14*.5),(int)(TICKS_PER_INCH*Math.PI*14*.5),(int)(TICKS_PER_INCH*Math.PI*14*.5),(int)(TICKS_PER_INCH*Math.PI*14*.5));
             baseController((int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*5),(int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*5));
-            baseController((int)(TICKS_PER_INCH*14),(int)(TICKS_PER_INCH*-14),(int)(TICKS_PER_INCH*14),(int)(TICKS_PER_INCH*-14));
-            baseController((int)(TICKS_PER_INCH*Math.PI*14),(int)(TICKS_PER_INCH*Math.PI*14),(int)(TICKS_PER_INCH*Math.PI*14),(int)(TICKS_PER_INCH*Math.PI*14));
-            baseController((int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33),(int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33));
-            baseController((int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*8));
-        }
-        yellow.setPosition(.37);
-        sleep(1000);
-        baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
-        yellow.setPosition(.9);
-        baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
-        if(spikeZone==1){
-            baseController((int)(TICKS_PER_INCH*26),(int)(TICKS_PER_INCH*26),(int)(TICKS_PER_INCH*-26),(int)(TICKS_PER_INCH*-26));
-        } else if (spikeZone==3){
-            baseController((int)(TICKS_PER_INCH*35),(int)(TICKS_PER_INCH*35),(int)(TICKS_PER_INCH*-35),(int)(TICKS_PER_INCH*-35));
-        } else {
+            baseController((int)(TICKS_PER_INCH*9),(int)(TICKS_PER_INCH*-9),(int)(TICKS_PER_INCH*9),(int)(TICKS_PER_INCH*-9));
+            baseController((int)(TICKS_PER_INCH*27),(int)(TICKS_PER_INCH*27),(int)(TICKS_PER_INCH*-27),(int)(TICKS_PER_INCH*-27));
+            sleep(3000);
+            baseController((int)(TICKS_PER_INCH*-88),(int)(TICKS_PER_INCH*88),(int)(TICKS_PER_INCH*-88),(int)(TICKS_PER_INCH*88));
             baseController((int)(TICKS_PER_INCH*28),(int)(TICKS_PER_INCH*28),(int)(TICKS_PER_INCH*-28),(int)(TICKS_PER_INCH*-28));
+            baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6));
+        } else {
+            baseController((int)(TICKS_PER_INCH*-40),(int)(TICKS_PER_INCH*14),(int)(TICKS_PER_INCH*-14),(int)(TICKS_PER_INCH*40));
+            baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
+            baseController((int)(TICKS_PER_INCH*11),(int)(TICKS_PER_INCH*11),(int)(TICKS_PER_INCH*-11),(int)(TICKS_PER_INCH*-11));
+            baseController((int)(TICKS_PER_INCH*-29),(int)(TICKS_PER_INCH*29),(int)(TICKS_PER_INCH*-29),(int)(TICKS_PER_INCH*29));
+            baseController((int)(TICKS_PER_INCH*Math.PI*14*.5),(int)(TICKS_PER_INCH*Math.PI*14*.5),(int)(TICKS_PER_INCH*Math.PI*14*.5),(int)(TICKS_PER_INCH*Math.PI*14*.5));
+            sleep(3000);
+            baseController((int)(TICKS_PER_INCH*-85),(int)(TICKS_PER_INCH*85),(int)(TICKS_PER_INCH*-85),(int)(TICKS_PER_INCH*85));
+            baseController((int)(TICKS_PER_INCH*27),(int)(TICKS_PER_INCH*27),(int)(TICKS_PER_INCH*-27),(int)(TICKS_PER_INCH*-27));
+            baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6));
         }
 
+        yellow.setPosition(.37);
+        sleep(100);
+        baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
+         yellow.setPosition(.9);
+        baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
     }
     public void motorController(DcMotor motor, int targetDestination, int startingPos){
 

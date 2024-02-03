@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class YellowAndPurpleBlue extends LinearOpMode {
     DcMotor motor1, motor2, motor3, motor4, slideMotor, slideAngle;
     Servo yellow;
+    CRServo wrist;
     RevColorSensorV3 leftDistance, rightDistance;
     private final double TICKS_PER_REV = 537.7;
     private final double TICKS_PER_INCH = TICKS_PER_REV/11.87;
@@ -34,8 +36,7 @@ public class YellowAndPurpleBlue extends LinearOpMode {
         slideMotor = hardwareMap.get(DcMotor.class, "slideRig");
         slideAngle = hardwareMap.get(DcMotor.class, "wormDrive");
         yellow = hardwareMap.get(Servo.class,"yellowPixel");
-        leftDistance = hardwareMap.get(RevColorSensorV3.class,"leftDistance");
-        rightDistance = hardwareMap.get(RevColorSensorV3.class,"rightDistance");
+        wrist = hardwareMap.get(CRServo.class, "wrist");
 
         CvMaster<SpikeZoneDetectionBlue> cam1 = new CvMaster<>(this, new SpikeZoneDetectionBlue());
         cam1.runPipeline();
@@ -46,59 +47,53 @@ public class YellowAndPurpleBlue extends LinearOpMode {
         while(!opModeIsActive()){
             spikeZone = (byte)cam1.getZone();
             telemetry.addData("Camera 1 Zone: ", spikeZone);
-            telemetry.addData("Left distance (INCHES): ", leftDistance.getDistance(DistanceUnit.INCH));
-            telemetry.addData("Right distance (INCHES): ", rightDistance.getDistance(DistanceUnit.INCH));
             telemetry.update();
             sleep(500);
         }
+        wrist.setPower(1);
+        sleep(1000);
+        wrist.setPower(0);
         cam1.stopCamera();
         //537.7 ticks per rev
         //13.5 track width
         // 13.5 * Math.PI / 2
 
-        baseController((int) (TICKS_PER_INCH * -32), (int) (TICKS_PER_INCH * 32), (int) (TICKS_PER_INCH * -32), (int) (TICKS_PER_INCH * 32));
-        if (spikeZone != 2) {
-            if (spikeZone == 3) {
-                baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
-                baseController((int) (-TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (-TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (-TICKS_PER_INCH * 13.5 * Math.PI / 2), (int) (-TICKS_PER_INCH * 13.5 * Math.PI / 2));
-                baseController((int)(TICKS_PER_INCH*-2.5),(int)(TICKS_PER_INCH*2.5),(int)(TICKS_PER_INCH*-2.5),(int)(TICKS_PER_INCH*2.5));
-            } else {
-                baseController((int) (TICKS_PER_INCH * 13.6 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.6 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.6 * Math.PI / 2), (int) (TICKS_PER_INCH * 13.6 * Math.PI / 2));
-                baseController((int)(TICKS_PER_INCH*-1),(int)(TICKS_PER_INCH*1),(int)(TICKS_PER_INCH*-1),(int)(TICKS_PER_INCH*1));
-            }
-        }
-        baseController((int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3));
-        baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
-
-        if (spikeZone == 3){
-            baseController((int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2),(int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2));
-            baseController((int)(TICKS_PER_INCH*13.5 * Math.PI * -.1),(int)(TICKS_PER_INCH*13.5 * Math.PI * -.1),(int)(TICKS_PER_INCH*13.5 * Math.PI * -.1),(int)(TICKS_PER_INCH*13.5 * Math.PI * -.1));
-            baseController((int)(TICKS_PER_INCH*36),(int)(TICKS_PER_INCH*-36),(int)(TICKS_PER_INCH*36),(int)(TICKS_PER_INCH*-36));
-            baseController((int)(TICKS_PER_INCH*13.5 * Math.PI*1.15),(int)(TICKS_PER_INCH*13.5 * Math.PI*1.15),(int)(TICKS_PER_INCH*13.5 * Math.PI*1.15),(int)(TICKS_PER_INCH*13.5 * Math.PI*1.15));
-            baseController((int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*5),(int)(TICKS_PER_INCH*5));
-            baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6));
-        } else if (spikeZone == 2){
-            baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
-            baseController((int) (TICKS_PER_INCH * 14 * Math.PI / 2), (int) (TICKS_PER_INCH * 14 * Math.PI / 2), (int) (TICKS_PER_INCH * 14 * Math.PI / 2), (int) (TICKS_PER_INCH * 14 * Math.PI / 2));
-            baseController((int)(TICKS_PER_INCH*-38),(int)(TICKS_PER_INCH*38),(int)(TICKS_PER_INCH*-38),(int)(TICKS_PER_INCH*38));
-            baseController((int)(TICKS_PER_INCH*1),(int)(TICKS_PER_INCH*1),(int)(TICKS_PER_INCH*-1),(int)(TICKS_PER_INCH*-1));
-
+        if (spikeZone==2){
+            baseController((int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33),(int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33));
+            baseController((int)(TICKS_PER_INCH*7),(int)(TICKS_PER_INCH*-7),(int)(TICKS_PER_INCH*7),(int)(TICKS_PER_INCH*-7));
+            baseController((int)(TICKS_PER_INCH*Math.PI*14/2),(int)(TICKS_PER_INCH*Math.PI*14/2),(int)(TICKS_PER_INCH*Math.PI*14/2),(int)(TICKS_PER_INCH*Math.PI*14/2));
+            baseController((int)(TICKS_PER_INCH*-39),(int)(TICKS_PER_INCH*39),(int)(TICKS_PER_INCH*-39),(int)(TICKS_PER_INCH*39));
+            baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*6));
+        } else if (spikeZone==3){
+            baseController((int)(TICKS_PER_INCH*-29),(int)(TICKS_PER_INCH*29),(int)(TICKS_PER_INCH*-29),(int)(TICKS_PER_INCH*29));
+            baseController((int)(TICKS_PER_INCH*Math.PI*-14/2),(int)(TICKS_PER_INCH*Math.PI*-14/2),(int)(TICKS_PER_INCH*Math.PI*-14/2),(int)(TICKS_PER_INCH*Math.PI*-14/2));
+            baseController((int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*5),(int)(TICKS_PER_INCH*-5),(int)(TICKS_PER_INCH*5));
+            baseController((int)(TICKS_PER_INCH*14),(int)(TICKS_PER_INCH*-14),(int)(TICKS_PER_INCH*14),(int)(TICKS_PER_INCH*-14));
+            baseController((int)(TICKS_PER_INCH*Math.PI*14),(int)(TICKS_PER_INCH*Math.PI*14),(int)(TICKS_PER_INCH*Math.PI*14),(int)(TICKS_PER_INCH*Math.PI*14));
+            baseController((int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33),(int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33));
+            baseController((int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*8));
         } else {
-            baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
-            baseController((int)(TICKS_PER_INCH*13),(int)(TICKS_PER_INCH*13),(int)(TICKS_PER_INCH*-13),(int)(TICKS_PER_INCH*-13));
-            baseController((int)(TICKS_PER_INCH*-40),(int)(TICKS_PER_INCH*40),(int)(TICKS_PER_INCH*-40),(int)(TICKS_PER_INCH*40));
-            baseController((int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*4));
+            baseController((int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8));
+            baseController((int)(TICKS_PER_INCH*14),(int)(TICKS_PER_INCH*14),(int)(TICKS_PER_INCH*-14),(int)(TICKS_PER_INCH*-14));
+            baseController((int)(TICKS_PER_INCH*-20),(int)(TICKS_PER_INCH*20),(int)(TICKS_PER_INCH*-20),(int)(TICKS_PER_INCH*20));
+            baseController((int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*-8),(int)(TICKS_PER_INCH*8),(int)(TICKS_PER_INCH*-8));
+            baseController((int)(TICKS_PER_INCH*Math.PI*14/2),(int)(TICKS_PER_INCH*Math.PI*14/2),(int)(TICKS_PER_INCH*Math.PI*14/2),(int)(TICKS_PER_INCH*Math.PI*14/2));
+            baseController((int)(TICKS_PER_INCH*-28),(int)(TICKS_PER_INCH*28),(int)(TICKS_PER_INCH*-28),(int)(TICKS_PER_INCH*28));
+            baseController((int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*-6),(int)(TICKS_PER_INCH*6),(int)(TICKS_PER_INCH*6));
         }
-
-//        if(spikeZone!=3){baseController((int)(TICKS_PER_INCH*(leftDistance.getDistance(DistanceUnit.INCH)-1.5)),(int)(TICKS_PER_INCH*(rightDistance.getDistance(DistanceUnit.INCH)-1.5)),(int)(TICKS_PER_INCH*(leftDistance.getDistance(DistanceUnit.INCH)-1.5)),(int)(TICKS_PER_INCH*(rightDistance.getDistance(DistanceUnit.INCH)-1.5)));}
-
-        baseController((int)(TICKS_PER_INCH*-2),(int)(TICKS_PER_INCH*2),(int)(TICKS_PER_INCH*-2),(int)(TICKS_PER_INCH*2));
-
-        yellow.setPosition(.45);
-        sleep(750);
+        yellow.setPosition(.37);
+        sleep(1000);
         baseController((int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4),(int)(TICKS_PER_INCH*4),(int)(TICKS_PER_INCH*-4));
          yellow.setPosition(.9);
         baseController((int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*3),(int)(TICKS_PER_INCH*-3));
+        if(spikeZone==1){
+            baseController((int)(TICKS_PER_INCH*26),(int)(TICKS_PER_INCH*26),(int)(TICKS_PER_INCH*-26),(int)(TICKS_PER_INCH*-26));
+        } else if (spikeZone==3){
+            baseController((int)(TICKS_PER_INCH*35),(int)(TICKS_PER_INCH*35),(int)(TICKS_PER_INCH*-35),(int)(TICKS_PER_INCH*-35));
+        } else {
+            baseController((int)(TICKS_PER_INCH*28),(int)(TICKS_PER_INCH*28),(int)(TICKS_PER_INCH*-28),(int)(TICKS_PER_INCH*-28));
+        }
+
     }
     public void motorController(DcMotor motor, int targetDestination, int startingPos){
 
@@ -147,13 +142,13 @@ public class YellowAndPurpleBlue extends LinearOpMode {
         motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while ((Math.abs(error1) > 30)||(Math.abs(error2) > 30)||(Math.abs(error3) > 30)||(Math.abs(error4) > 30)) { // <= change this value for your error range /  reliability.
-            motor1.setPower((motor1.getPower() + (error1 / targetDestination1)) / 2);
+            motor1.setPower(.8*(motor1.getPower() + (error1 / targetDestination1)) / 2);
             error1 = motor1.getTargetPosition()-motor1.getCurrentPosition();
-            motor2.setPower((motor2.getPower() + (error2 / targetDestination2)) / 2);
+            motor2.setPower(.8*(motor2.getPower() + (error2 / targetDestination2)) / 2);
             error2 = motor2.getTargetPosition()-motor2.getCurrentPosition();
-            motor3.setPower((motor3.getPower() + (error3 / targetDestination3)) / 2);
+            motor3.setPower(.8*(motor3.getPower() + (error3 / targetDestination3)) / 2);
             error3 = motor3.getTargetPosition()-motor3.getCurrentPosition();
-            motor4.setPower((motor4.getPower() + (error4 / targetDestination4)) / 2);
+            motor4.setPower(.8*(motor4.getPower() + (error4 / targetDestination4)) / 2);
             error4 = motor4.getTargetPosition()-motor4.getCurrentPosition();
 
             telemetry.addData("Pos 1: ",motor1.getCurrentPosition());

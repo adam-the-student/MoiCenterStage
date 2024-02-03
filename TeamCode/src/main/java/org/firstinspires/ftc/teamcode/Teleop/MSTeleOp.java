@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class MSTeleOp extends LinearOpMode {
 
     private DcMotor motor1,motor2,motor3,motor4, leftRigging, rightRigging, slideRig, wormDrive;
-    private Servo leftHook, rightHook, drone, outTake;
-    private CRServo leftspin, rightspin;
+    private Servo leftHook, rightHook, outTake, drone;
+    private CRServo leftspin, rightspin, wrist;
 
     @Override
     public void runOpMode() {
@@ -30,6 +30,7 @@ public class MSTeleOp extends LinearOpMode {
         rightspin = hardwareMap.get(CRServo.class, "rightSpin");
         outTake = hardwareMap.get(Servo.class, "outTake");
         drone = hardwareMap.get(Servo.class, "drone");
+        wrist = hardwareMap.get(CRServo.class, "wrist");
 
         waitForStart();
 
@@ -68,9 +69,18 @@ public class MSTeleOp extends LinearOpMode {
             motor4.setPower(-motor4Power / 2);  // motor4 is bottom right
 
             telemetry.addData("CONTROLS : ", inverseControls == 1 ? "REGULAR" : "INVERTED");
-            telemetry.update();
+
+            if (gamepad1.cross){
+                drone.setPosition(1);
+                sleep(1000);
+                drone.setPosition(0);
+            }
 
             if (gamepad1.left_bumper) {
+                motor1.setPower(0);  // motor1 is top left
+                motor2.setPower(0);  // motor2 is top right
+                motor3.setPower(0);  // motor3 is bottom left
+                motor4.setPower(0);  // motor4 is bottom right
                 leftRigging.setPower(1);
                 rightRigging.setPower(1);
                 sleep(3000);
@@ -80,6 +90,10 @@ public class MSTeleOp extends LinearOpMode {
                 rightHook.setPosition(0);
             }
             if (gamepad1.right_bumper) {
+                motor1.setPower(0);  // motor1 is top left
+                motor2.setPower(0);  // motor2 is top right
+                motor3.setPower(0);  // motor3 is bottom left
+                motor4.setPower(0);  // motor4 is bottom right
                 leftRigging.setPower(-1);
                 rightRigging.setPower(-1);
                 sleep(3000);
@@ -87,8 +101,22 @@ public class MSTeleOp extends LinearOpMode {
                 rightRigging.setPower(0);
             }
 
+            //gamepad2
+            wormDrive.setPower(-gamepad2.left_stick_y);
+            slideRig.setPower(gamepad2.right_stick_y/3);
 
+            if (gamepad2.triangle){
+                leftspin.setPower(0.1);
+            } else {
+                leftspin.setPower(gamepad2.right_trigger > 0 ? -.3 : (gamepad2.left_trigger > 0 ? .3 : 0));
+                rightspin.setPower(gamepad2.right_trigger > 0 ? .3 : (gamepad2.left_trigger > 0 ? -.3 : 0));
+            }
 
+            wrist.setPower(gamepad2.left_stick_x/4);
+
+            outTake.setPosition(gamepad2.circle?1:0);
+
+            telemetry.update();
         }
     }
 }

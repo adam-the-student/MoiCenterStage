@@ -96,11 +96,6 @@ public class SpikeZoneDetectionRed extends TransitionPipeline {
         for (MatOfPoint contour : contours) {
             boundingRect = Imgproc.boundingRect(contour);
 
-            if (boundingRect.area()<largestArea){
-                continue;
-            }
-            largestArea = boundingRect.area();
-
             // Calculate the center of the bounding rectangle
             Point center = new Point(boundingRect.x + (double)boundingRect.width / 2, boundingRect.y + (double)boundingRect.height / 2);
 
