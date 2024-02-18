@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -10,36 +11,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "salahIntaketest teleop")
 public class newintaketest extends LinearOpMode {
     private CRServo leftspin, rightspin;
-    private Servo outTake;
+    private DcMotor test;
 
     @Override
     public void runOpMode() {
         leftspin = hardwareMap.get(CRServo.class, "leftSpin");
         rightspin = hardwareMap.get(CRServo.class, "rightSpin");
-        outTake = hardwareMap.get(Servo.class, "outTake");
+        test = hardwareMap.get(DcMotor.class, "test");
 
         waitForStart();
-    while (opModeIsActive()){
-        if (gamepad1.left_trigger != 0) {
-            leftspin.setPower(-0.3);
-            rightspin.setPower(0.3);
-        } else if (gamepad1.right_trigger != 0) {
-            leftspin.setPower(0.3);
-            rightspin.setPower(-0.3);
+        test.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        test.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        test.setTargetPosition(1000);
+        test.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (opModeIsActive()){
+        leftspin.setPower(gamepad2.right_trigger > 0 ? -1 : (gamepad2.left_trigger > 0 ? 1 : 0));
+        rightspin.setPower(gamepad2.right_trigger > 0 ? 1 : (gamepad2.left_trigger > 0 ? -1 : 0));
+        telemetry.addData("Motor pos: ", test.getCurrentPosition());
+        telemetry.update();
         }
-        else {
-            leftspin.setPower(0);
-            rightspin.setPower(0);
-        }
-        if (gamepad1.dpad_up){
-            outTake.setPosition(1);
-        } else if (gamepad1.dpad_down) {
-            outTake.setPosition(.5);
-
-        }
-        else {
-            outTake.setPosition(0);
-        }
-}
-}
+    }
 }

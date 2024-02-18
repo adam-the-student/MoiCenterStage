@@ -21,18 +21,18 @@ public class APTAlign {
     private DcMotor motor1,motor2,motor3,motor4;
 
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 14.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 7.0; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
-    final double TURN_GAIN   =  0.015  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    final double SPEED_GAIN  =  0.03  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double STRAFE_GAIN =  0.02 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+    final double TURN_GAIN   =  0.02  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
-    final double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_STRAFE= 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_SPEED = 0.3;   //  Clip the approach speed to this max value (adjust for your robot)
+    final double MAX_AUTO_STRAFE= 0.3;   //  Clip the approach speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN  = 0.2;   //  Clip the turn speed to this max value (adjust for your robot)
 
     private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
     private static int DESIRED_TAG_ID = 2;     // Choose the tag you want to approach or set to -1 for ANY tag.
@@ -51,15 +51,12 @@ public class APTAlign {
         quack = l_op;
 
         initAprilTag();
+        setManualExposure(1, 250);
 
         motor1 = quack.hardwareMap.get(DcMotor.class, "frontLeft");
         motor2 = quack.hardwareMap.get(DcMotor.class, "frontRight");
         motor3 = quack.hardwareMap.get(DcMotor.class, "backLeft");
         motor4 = quack.hardwareMap.get(DcMotor.class, "backRight");
-
-
-        if (USE_WEBCAM)
-            setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
     }
 
     public void setDesiredTagId(int desiredTagId){
@@ -79,7 +76,7 @@ public class APTAlign {
         List<AprilTagDetection> currentDetections;
         smolTimer.reset();
 
-        while (smolTimer.time(TimeUnit.MILLISECONDS)<1000) {
+        while (smolTimer.time(TimeUnit.SECONDS)<1) {
 
             // Step through the list of detected tags and look for a matching tag
             currentDetections = aprilTag.getDetections();
@@ -106,7 +103,7 @@ public class APTAlign {
             }
         }
 
-        while (rangeError>=2) {
+        while (rangeError>=3) {
 
             // Step through the list of detected tags and look for a matching tag
             currentDetections = aprilTag.getDetections();
@@ -152,10 +149,10 @@ public class APTAlign {
 
     public void moveRobot(double x, double y, double yaw) {
         // Calculate wheel powers.
-        double leftFrontPower    =  x -y -yaw;
-        double rightFrontPower   =  x +y +yaw;
-        double leftBackPower     =  x +y -yaw;
-        double rightBackPower    =  x -y +yaw;
+        double leftFrontPower    =  x -y +yaw;
+        double rightFrontPower   =  x +y -yaw;
+        double leftBackPower     =  x +y +yaw;
+        double rightBackPower    =  x -y -yaw;
 
         // Normalize wheel powers to be less than 1.0
         double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
@@ -171,10 +168,10 @@ public class APTAlign {
 
 
         // Send powers to the wheels.
-        motor1.setPower(-leftFrontPower);
-        motor2.setPower(rightFrontPower);
-        motor3.setPower(-leftBackPower);
-        motor4.setPower(rightBackPower);
+        motor1.setPower(leftFrontPower);
+        motor2.setPower(-rightFrontPower);
+        motor3.setPower(leftBackPower);
+        motor4.setPower(-rightBackPower);
     }
 
     /**

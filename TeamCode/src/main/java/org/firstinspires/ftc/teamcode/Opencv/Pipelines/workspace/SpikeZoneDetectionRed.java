@@ -102,9 +102,11 @@ public class SpikeZoneDetectionRed extends TransitionPipeline {
             // Determine which zone the center of the bounding rectangle falls into
             byte zone = (byte) (center.x / zoneWidth);
 
-            // Update the spikeZone if the contour is found in a zone
-            if (zone >= 0 && zone <= 2) {
-                spikeZone = zone;
+            if (center.y> (double) input.height() /2) {
+                // Update the spikeZone if the contour is found in a zone
+                if (zone >= 0 && zone <= 2) {
+                    spikeZone = zone;
+                }
             }
         }
 
