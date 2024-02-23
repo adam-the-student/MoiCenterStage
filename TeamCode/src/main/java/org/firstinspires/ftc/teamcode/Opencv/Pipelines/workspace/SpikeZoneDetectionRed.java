@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Opencv.Pipelines.TransitionPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -16,26 +14,18 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpikeZoneDetectionRed extends TransitionPipeline {
+public class SpikeZoneDetectionRed extends OpenCvPipeline {
     Telemetry telemetry;
     private double largestArea = 0;
-    // rectangles
     public Rect boundingRect;
-    // points
-    private Point start = null;
-    private Point end = null;
-    Point center = null;
-    private byte spikeZone=0;
-    // backlog of frames to average out to reduce noise
+    private byte spikeZone = -1;
     ArrayList<double[]> frameList;
-    // these are public static to be tuned in the dashboard
-    public static double LowH = 5.0;
-    public static double LowS = 126.1;
-    public static double LowV = 200;
-    public static double HighH = 26.9;
+    public static double LowH = 0;
+    public static double LowS = 75.1;
+    public static double LowV = 0;
+    public static double HighH = 11.3;
     public static double HighS = 255;
     public static double HighV = 255;
-
     Mat hierarchy = new Mat();
     Mat mat = new Mat();
 
@@ -49,67 +39,55 @@ public class SpikeZoneDetectionRed extends TransitionPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-
         largestArea = 0;
-
-        // mat turns into HSV value
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
         if (mat.empty()) {
             return input;
         }
 
-        Scalar lowHSV = new Scalar(LowH, LowS, LowV);
-        Scalar higHSV = new Scalar(HighH, HighS, HighV);
+        // Draw solid rectangles to divide the screen into two equal parts
+        Imgproc.rectangle(mat, new Point(0, 0),
+                new Point(input.width(),140),
+                new Scalar(128,0, 0), -1);
 
-        Core.inRange(mat, lowHSV, higHSV, mat);
+        Imgproc.rectangle(mat, new Point(input.width(), input.height()),
+                new Point(0,170),
+                new Scalar(128, 0, 0), -1);
+        Scalar lowHSV = new Scalar(LowH, LowS, LowV);
+        Scalar highHSV = new Scalar(HighH, HighS, HighV);
+
+        Core.inRange(mat, lowHSV, highHSV, mat);
 
         Imgproc.morphologyEx(mat, mat, Imgproc.MORPH_OPEN, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 4)));
 
         List<MatOfPoint> contours = new ArrayList<>();
-
 
         Imgproc.findContours(mat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
         Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
         Imgproc.drawContours(mat, contours, -1, new Scalar(255, 255, 0), 2);
 
-//        if (contours.size() > 0) {
-//            MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contours.size()];
-//            Rect[] boundRect = new Rect[contours.size()];
-//            for (int i = 0; i < contours.size(); i++) {
-//                contoursPoly[i] = new MatOfPoint2f();
-//                Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
-//                boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
-//                // draw red bounding rectangles on mat
-//                // the mat has been converted to HSV so we need to use HSV as well
-//                Imgproc.rectangle(mat, boundRect[i], new Scalar(0.5, 76.9, 89.8));
-//            }
-//        }
-
         // Calculate the width of each zone
         int imageWidth = input.width();
-        int zoneWidth = imageWidth / 3;
-
-        // Initialize variables to track which zone the spike is in
-        // -1 indicates no spike found in any zone
+        int zoneWidth = imageWidth / 2;
+        spikeZone=2;
 
         for (MatOfPoint contour : contours) {
             boundingRect = Imgproc.boundingRect(contour);
 
-            if (boundingRect.area()<largestArea){
+            if (boundingRect.area() < largestArea) {
                 continue;
             }
             largestArea = boundingRect.area();
 
             // Calculate the center of the bounding rectangle
-            Point center = new Point(boundingRect.x + (double)boundingRect.width / 2, boundingRect.y + (double)boundingRect.height / 2);
+            Point center = new Point(boundingRect.x + (double) boundingRect.width / 2, boundingRect.y + (double) boundingRect.height / 2);
 
             // Determine which zone the center of the bounding rectangle falls into
-            byte zone = (byte) (center.x / zoneWidth);
-
-            // Update the spikeZone if the contour is found in a zone
-            if (zone >= 0 && zone <= 2) {
-                spikeZone = zone;
+            if (center.x < zoneWidth) {
+                spikeZone = 0; // Zone 0 for the left side
+            } else {
+                spikeZone = 1; // Zone 1 for the right side
             }
         }
 
@@ -126,11 +104,7 @@ public class SpikeZoneDetectionRed extends TransitionPipeline {
         return mat;
     }
 
-    public int LENGTH() {
-        return (int) Core.norm(new MatOfPoint2f(start), new MatOfPoint2f(end));
-    }
-
     public byte getData() {
-        return (byte)(spikeZone+1);
+        return (byte) (spikeZone + 1);
     }
 }

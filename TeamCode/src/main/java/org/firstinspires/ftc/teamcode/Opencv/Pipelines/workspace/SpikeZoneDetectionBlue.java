@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Opencv.Pipelines.TransitionPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -16,28 +14,20 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpikeZoneDetectionBlue extends TransitionPipeline {
+public class SpikeZoneDetectionBlue extends OpenCvPipeline {
     Telemetry telemetry;
     private double largestArea = 0;
-    // rectangles
     public Rect boundingRect;
-    // points
-    private Point start = null;
-    private Point end = null;
-    Point center = null;
-    private byte spikeZone=0;
-    // backlog of frames to average out to reduce noise
+    private byte spikeZone = 2; // Initially set to 2 to indicate no spike detected
     ArrayList<double[]> frameList;
-
-    Mat hierarchy = new Mat();
-    Mat mat = new Mat();
-    // these are public static to be tuned in the dashboard
     public static double LowH = 107.7;
     public static double LowS = 124.7;
     public static double LowV = 117.6;
     public static double HighH = 140.3;
     public static double HighS = 226.7;
     public static double HighV = 255;
+    Mat hierarchy = new Mat();
+    Mat mat = new Mat();
 
     public SpikeZoneDetectionBlue() {
         frameList = new ArrayList<>();
@@ -49,17 +39,25 @@ public class SpikeZoneDetectionBlue extends TransitionPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-
-        // mat turns into HSV value
+        largestArea = 0;
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
         if (mat.empty()) {
             return input;
         }
 
-        Scalar lowHSV = new Scalar(LowH, LowS, LowV);
-        Scalar higHSV = new Scalar(HighH, HighS, HighV);
+        // Draw solid rectangles to divide the screen into two equal parts
 
-        Core.inRange(mat, lowHSV, higHSV, mat);
+        Imgproc.rectangle(mat, new Point(0, 0),
+                new Point(input.width(),140),
+                new Scalar(128,0, 0), -1);
+
+        Imgproc.rectangle(mat, new Point(input.width(), input.height()),
+                new Point(0,170),
+                new Scalar(128, 0, 0), -1);
+        Scalar lowHSV = new Scalar(LowH, LowS, LowV);
+        Scalar highHSV = new Scalar(HighH, HighS, HighV);
+
+        Core.inRange(mat, lowHSV, highHSV, mat);
 
         Imgproc.morphologyEx(mat, mat, Imgproc.MORPH_OPEN, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 4)));
 
@@ -72,40 +70,40 @@ public class SpikeZoneDetectionBlue extends TransitionPipeline {
 
         // Calculate the width of each zone
         int imageWidth = input.width();
-        int zoneWidth = imageWidth / 3;
-
-        // Initialize variables to track which zone the spike is in
-        // -1 indicates no spike found in any zone
+        int zoneWidth = imageWidth / 2;
+        boundingRect = new Rect(new Point(1,1),new Point(2,2));
+        spikeZone=2;
 
         for (MatOfPoint contour : contours) {
             boundingRect = Imgproc.boundingRect(contour);
 
+            if (boundingRect.area() < largestArea) {
+                continue;
+            }
+            largestArea = boundingRect.area();
+
             // Calculate the center of the bounding rectangle
-            Point center = new Point(boundingRect.x + (double)boundingRect.width / 2, boundingRect.y + (double)boundingRect.height / 2);
+            Point center = new Point(boundingRect.x + (double) boundingRect.width / 2, boundingRect.y + (double) boundingRect.height / 2);
 
             // Determine which zone the center of the bounding rectangle falls into
-            byte zone = (byte) (center.x / zoneWidth);
-
-            // Update the spikeZone if the contour is found in a zone
-            if (zone >= 0 && zone <= 2) {
-                spikeZone = zone;
+            if (center.x < zoneWidth) {
+                spikeZone = 0; // Zone 0 for the left side
+            } else {
+                spikeZone = 1; // Zone 1 for the right side
             }
         }
 
         // Send telemetry based on the spikeZone
         if (telemetry != null) {
-            if (spikeZone == -1) {
-                telemetry.addData("Spike Zone", "No spike detected");
-            } else {
-                telemetry.addData("Spike Zone", "Zone " + spikeZone);
-            }
+            telemetry.addData("Spike Zone", "Zone " + spikeZone);
+            telemetry.addData("Area", boundingRect.area());
             telemetry.update();
         }
 
         return mat;
     }
-    
+
     public byte getData() {
-        return (byte)(spikeZone+1);
+        return (byte) (spikeZone + 1);
     }
 }
