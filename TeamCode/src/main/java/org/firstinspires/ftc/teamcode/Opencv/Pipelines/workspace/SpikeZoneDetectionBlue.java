@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Opencv.Pipelines.TransitionPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -14,7 +15,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpikeZoneDetectionBlue extends OpenCvPipeline {
+public class SpikeZoneDetectionBlue extends TransitionPipeline {
     Telemetry telemetry;
     private double largestArea = 0;
     public Rect boundingRect;
