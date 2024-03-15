@@ -20,7 +20,7 @@ public class PTDTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
             double y = gamepad1.left_stick_y;
-            double x = -gamepad1.left_stick_x*1.15 ; // Counteract imperfect strafing
+            double x = gamepad1.left_stick_x*1.15 ; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x/2;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);

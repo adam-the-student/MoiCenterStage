@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
@@ -19,23 +21,23 @@ import java.util.concurrent.TimeUnit;
 public class APTAlign {
 
     private DcMotor motor1,motor2,motor3,motor4;
+    byte inverse;
 
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 7.0; //  this is how close the camera should get to the target (inches)
+    double DESIRED_DISTANCE = 8.0; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN  =  0.03  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double STRAFE_GAIN =  0.02 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
-    final double TURN_GAIN   =  0.02  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    final double SPEED_GAIN  =  0.03;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double STRAFE_GAIN =  0.02;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+    final double TURN_GAIN   =  0.025;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
     final double MAX_AUTO_SPEED = 0.3;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_STRAFE= 0.3;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_TURN  = 0.2;   //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN  = 0.4;   //  Clip the turn speed to this max value (adjust for your robot)
 
-    private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
-    private static int DESIRED_TAG_ID = 2;     // Choose the tag you want to approach or set to -1 for ANY tag.
+    private int DESIRED_TAG_ID = 2;     // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -47,11 +49,11 @@ public class APTAlign {
 
     LinearOpMode quack;
 
-    public APTAlign(LinearOpMode l_op){
+    public APTAlign(LinearOpMode l_op, String cameraName){
         quack = l_op;
 
-        initAprilTag();
-        setManualExposure(1, 250);
+        initAprilTag(cameraName);
+        setManualExposure(12, 240);
 
         motor1 = quack.hardwareMap.get(DcMotor.class, "frontLeft");
         motor2 = quack.hardwareMap.get(DcMotor.class, "frontRight");
@@ -63,8 +65,9 @@ public class APTAlign {
         DESIRED_TAG_ID = desiredTagId;
     }
 
-    public void runToTag(int destinationTag) {
+    public void runToTag(int destinationTag,double distance) {
         DESIRED_TAG_ID = destinationTag;
+        DESIRED_DISTANCE = distance;
 
         targetFound = false;
         desiredTag = null;
@@ -103,7 +106,7 @@ public class APTAlign {
             }
         }
 
-        while (rangeError>=3) {
+        while (rangeError>=2) {
 
             // Step through the list of detected tags and look for a matching tag
             currentDetections = aprilTag.getDetections();
@@ -149,10 +152,10 @@ public class APTAlign {
 
     public void moveRobot(double x, double y, double yaw) {
         // Calculate wheel powers.
-        double leftFrontPower    =  x -y +yaw;
-        double rightFrontPower   =  x +y -yaw;
-        double leftBackPower     =  x +y +yaw;
-        double rightBackPower    =  x -y -yaw;
+        double leftFrontPower    =  inverse*(x-y) +yaw;
+        double rightFrontPower   =  inverse*(x+y) -yaw;
+        double leftBackPower     =  inverse*(x+y) +yaw;
+        double rightBackPower    =  inverse*(x-y) -yaw;
 
         // Normalize wheel powers to be less than 1.0
         double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
@@ -177,31 +180,14 @@ public class APTAlign {
     /**
      * Initialize the AprilTag processor.
      */
-    private void initAprilTag() {
-        // Create the AprilTag processor by using a builder.
+    private void initAprilTag(String cameraName) {
         aprilTag = new AprilTagProcessor.Builder().setLensIntrinsics(816.434 , 816.434 , 337.687, 234.308).build();
-
-        // Adjust Image Decimation to trade-off detection-range for detection-rate.
-        // eg: Some typical detection data using a Logitech C920 WebCam
-        // Decimation = 1 ..  Detect 2" Tag from 10 feet away at 10 Frames per second
-        // Decimation = 2 ..  Detect 2" Tag from 6  feet away at 22 Frames per second
-        // Decimation = 3 ..  Detect 2" Tag from 4  feet away at 30 Frames Per Second
-        // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second
-        // Note: Decimation can be changed on-the-fly to adapt during a match.
-
-
-        // Create the vision portal by using a builder.
-        if (USE_WEBCAM) {
+        // Create the AprilTag processor by using a builder.
             visionPortal = new VisionPortal.Builder()
-                    .setCamera(quack.hardwareMap.get(WebcamName.class, "Webcam 1"))
+                    .setCamera(quack.hardwareMap.get(WebcamName.class, cameraName))
                     .addProcessor(aprilTag)
                     .build();
-        } else {
-            visionPortal = new VisionPortal.Builder()
-                    .setCamera(BuiltinCameraDirection.BACK)
-                    .addProcessor(aprilTag)
-                    .build();
-        }
+        inverse = (byte) (cameraName.equals("Webcam 2")?-1:1);
     }
     /*
      Manually set the camera gain and exposure.

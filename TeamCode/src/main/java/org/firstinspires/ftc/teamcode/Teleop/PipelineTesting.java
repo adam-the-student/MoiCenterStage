@@ -6,13 +6,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Opencv.CvMaster;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionRed;
 
-@Disabled
 @TeleOp(name = "Pipeline testing one camera")
 public class PipelineTesting extends LinearOpMode {
     LinearOpMode linearOpMode = this;
     @Override
     public void runOpMode(){
-        CvMaster<SpikeZoneDetectionBlue> cam1 = new CvMaster<>(linearOpMode, new SpikeZoneDetectionBlue());
+        CvMaster<SpikeZoneDetectionRed> cam1 = new CvMaster<>(linearOpMode, new SpikeZoneDetectionRed());
         cam1.runPipeline();
         waitForStart();
 

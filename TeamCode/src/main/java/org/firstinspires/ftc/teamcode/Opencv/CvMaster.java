@@ -75,5 +75,6 @@ public class CvMaster<T extends TransitionPipeline> {
     //stop streaming
     public void stopCamera(){
         webcam.stopStreaming();
+        webcam.closeCameraDevice();
     }
 }

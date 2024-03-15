@@ -1,28 +1,21 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autons;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Opencv.CvMaster;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.AprilTagDetectionPipeline;
-import org.firstinspires.ftc.teamcode.Opencv.Pipelines.SpikeDetectionThreeZone;
-import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionBlue;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionRed;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import java.util.ArrayList;
-
-@Autonomous(name = "Park and Purple")
-public class PurpleAndPark extends LinearOpMode {
+@Autonomous(name = "Spike+AprilTag Detection Right")
+public class SpikeAndApriltagDetectionAutoRightSide extends LinearOpMode {
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
     OpenCvCamera camera;
     static final double FEET_PER_METER = 3.28084;
@@ -50,8 +43,8 @@ public class PurpleAndPark extends LinearOpMode {
         motor4 = hardwareMap.get(DcMotor.class,"backRight");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
         int spikeZone = 0;
-        CvMaster cam1 = new CvMaster(this, new SpikeZoneDetectionRed());
-        cam1.runPipeline();
+            CvMaster cam1 = new CvMaster(this, new SpikeZoneDetectionRed());
+            cam1.runPipeline();
         while (!isStarted()) {
             spikeZone = cam1.getZone();
             telemetry.addData("Camera 1 Zone: ", spikeZone);
@@ -63,34 +56,20 @@ public class PurpleAndPark extends LinearOpMode {
             sleep(1000);
         }
         // just started
-        cam1.stopCamera();
+            cam1.stopCamera();
 
         lineFromVector(0,1,4);
         sleep(500);
 
         if(spikeZone==1){
             turn(1.8);
-            sleep(500);
-            intakeMotor.setPower(.75);
-            sleep(500);
-            intakeMotor.setPower(0);
-            lineFromVector(0,1,2);
         } else if (spikeZone==3){
             turn(-1.8);
-            sleep(500);
-            intakeMotor.setPower(.75);
-            sleep(500);
-            intakeMotor.setPower(0);
-            lineFromVector(0,-1,2);
-        }else {
-            sleep(500);
-            intakeMotor.setPower(.75);
-            sleep(500);
-            intakeMotor.setPower(0);
-            lineFromVector(1,0,2);
         }
-
-
+        sleep(500);
+        intakeMotor.setPower(.75);
+        sleep(1000);
+        intakeMotor.setPower(0);
 
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);

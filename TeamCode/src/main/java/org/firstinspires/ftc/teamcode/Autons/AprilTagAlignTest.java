@@ -24,7 +24,7 @@ public class AprilTagAlignTest extends LinearOpMode {
 
         waitForStart();
 
-        APTAlign aligner = new APTAlign(this);
+        APTAlign aligner = new APTAlign(this,"Webcam 1");
 
         baseController((int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33),(int)(TICKS_PER_INCH*-33),(int)(TICKS_PER_INCH*33));
         baseController((int)(TICKS_PER_INCH*7),(int)(TICKS_PER_INCH*-7),(int)(TICKS_PER_INCH*7),(int)(TICKS_PER_INCH*-7));
@@ -32,7 +32,7 @@ public class AprilTagAlignTest extends LinearOpMode {
         baseController((int)(TICKS_PER_INCH*-12),(int)(TICKS_PER_INCH*12),(int)(TICKS_PER_INCH*-12),(int)(TICKS_PER_INCH*12));
         baseController((int)(TICKS_PER_INCH*-7),(int)(TICKS_PER_INCH*-7),(int)(TICKS_PER_INCH*7),(int)(TICKS_PER_INCH*7));
 
-        aligner.runToTag(2);
+        aligner.runToTag(2,8);
 
         baseController((int)(TICKS_PER_INCH*-3),(int)(TICKS_PER_INCH*7),(int)(TICKS_PER_INCH*-7),(int)(TICKS_PER_INCH*3));
         yellow.setPosition(.37);

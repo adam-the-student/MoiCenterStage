@@ -4,61 +4,73 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-import org.firstinspires.ftc.teamcode.BaseRobotMethodsAndStuff;
+import org.firstinspires.ftc.teamcode.Helpers.BaseRobotMethodsAndStuff;
 import org.firstinspires.ftc.teamcode.Opencv.CvMaster;
-import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionBlue;
 import org.firstinspires.ftc.teamcode.Opencv.Pipelines.workspace.SpikeZoneDetectionRed;
-
-import java.util.concurrent.TimeUnit;
 
 @Autonomous(name = "2' + 0 Red BackDrop")
 public class YellowAndPurpleRed extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        boolean yes = true;
+
         BaseRobotMethodsAndStuff robot = new BaseRobotMethodsAndStuff(this);
-        robot.closeClaw();
+        robot.closeClaw(BaseRobotMethodsAndStuff.ClawSide.LEFT);
         CvMaster<SpikeZoneDetectionRed> cam1 = new CvMaster<>(this, new SpikeZoneDetectionRed());
         cam1.runPipeline();
         byte spikeZone=2;
-        APTAlign aptAlign = new APTAlign(this);
+        APTAlign aptAlign = new APTAlign(this, "Webcam 1");
         while(!opModeIsActive()){
             spikeZone = (byte)cam1.getZone();
             telemetry.addData("Spike Camera Zone: ", spikeZone);
             telemetry.update();
             sleep(500);
         }
+
         cam1.stopCamera();
         waitForStart();
 
-        robot.calculateTargetPos(-24,-24);
+        if (spikeZone==1){
+            robot.calculateTargetPos(-30,-26);
+        } else if (spikeZone==2){
+            robot.calculateTargetPos(-26,-26);
+        } else {
+            robot.calculateTargetPos(-23,-26);
+        }
         robot.turn(90);
         robot.resetEncoders();
+        aptAlign.runToTag(spikeZone==1?4:spikeZone==2?5:6,8);
         robot.flipArm();
-        aptAlign.runToTag(spikeZone==1?4:spikeZone==2?5:6);
-        robot.calculateTargetPos(5,-2);
-        robot.openClaw(BaseRobotMethodsAndStuff.ClawSide.LEFT);
+        robot.calculateTargetPos(10,spikeZone==1?0:2);
+        robot.openClaw(BaseRobotMethodsAndStuff.ClawSide.RIGHT);
         robot.armDown();
         if (spikeZone==1){
-            robot.calculateTargetPos(-37,10);
-            robot.wristPos(BaseRobotMethodsAndStuff.ClawPos.DOWN);
+            robot.calculateTargetPos(-42,14);
+            robot.wristPos(BaseRobotMethodsAndStuff.WristPos.AUTONDOWN);
             robot.openClaw(BaseRobotMethodsAndStuff.ClawSide.RIGHT);
-            robot.wristPos(BaseRobotMethodsAndStuff.ClawPos.UP);
-            robot.calculateTargetPos(40,24);
+            sleep(100);
+            robot.clawClose(BaseRobotMethodsAndStuff.ClawSide.RIGHT);
+            robot.clawClose(BaseRobotMethodsAndStuff.ClawSide.LEFT);
+            robot.wristPos(BaseRobotMethodsAndStuff.WristPos.BACKDROP);
+            robot.calculateTargetPos(38,26);
         } else if (spikeZone==2){
-            robot.calculateTargetPos(-21,-8);
-            robot.slide(1);
-            robot.wristPos(BaseRobotMethodsAndStuff.ClawPos.DOWN);
+            robot.calculateTargetPos(-24,-12);
+            robot.wristPos(BaseRobotMethodsAndStuff.WristPos.AUTONDOWN);
             robot.openClaw(BaseRobotMethodsAndStuff.ClawSide.RIGHT);
-            robot.wristPos(BaseRobotMethodsAndStuff.ClawPos.UP);
-            robot.calculateTargetPos(26,39);
-            robot.slide(-1);
+            sleep(100);
+            robot.clawClose(BaseRobotMethodsAndStuff.ClawSide.RIGHT);
+            robot.clawClose(BaseRobotMethodsAndStuff.ClawSide.LEFT);
+            robot.wristPos(BaseRobotMethodsAndStuff.WristPos.BACKDROP);
+            robot.calculateTargetPos(26,41);
         } else {
-            robot.calculateTargetPos(-24,-8);
-            robot.wristPos(BaseRobotMethodsAndStuff.ClawPos.DOWN);
+            robot.calculateTargetPos(-19,-7);
+            robot.wristPos(BaseRobotMethodsAndStuff.WristPos.AUTONDOWN);
             robot.openClaw(BaseRobotMethodsAndStuff.ClawSide.RIGHT);
-            robot.wristPos(BaseRobotMethodsAndStuff.ClawPos.UP);
-            robot.calculateTargetPos(36,28);
+            sleep(100);
+            robot.clawClose(BaseRobotMethodsAndStuff.ClawSide.RIGHT);
+            robot.clawClose(BaseRobotMethodsAndStuff.ClawSide.LEFT);
+            robot.wristPos(BaseRobotMethodsAndStuff.WristPos.BACKDROP);
+            robot.calculateTargetPos(18,28);
+            robot.calculateTargetPos(6,0);
         }
 
     }
