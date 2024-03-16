@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.Helpers;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import java.util.concurrent.TimeUnit;
 
 public class BaseRobotMethodsAndStuff implements Runnable{
@@ -19,19 +23,23 @@ public class BaseRobotMethodsAndStuff implements Runnable{
         DOWN,
         AUTONDOWN
     }
+    public enum UniLambdas {
+        PCONTROLLER,
+        MOVEARM
+    }
 
     LinearOpMode l_op;
     ElapsedTime elapsedTime;
     SmolFunction theFunction;
-    public SmolFunction simplePController;
+    public SmolFunction simplePController, moveArm;
     public DcMotor motor1, motor2, motor3, motor4, leftRig, rightRig, wormDrive, slideMotor;
     Servo drone, leftHook, rightHook, wrist;
     CRServo leftClaw, rightClaw;
     RevTouchSensor armLimit;
     boolean isUp= false, yes = true;
     byte inverseControls = 1;
-    DcMotor motor;
-    int x;
+    Object[] args;
+    UniLambdas theLambda;
 
     private final double ACCEL_GAIN = 0.015;
     private final double MAX_VELO = 0.7;
@@ -60,19 +68,80 @@ public class BaseRobotMethodsAndStuff implements Runnable{
         rightClaw = l_op.hardwareMap.get(CRServo.class, "rightClaw");
         armLimit = l_op.hardwareMap.get(RevTouchSensor.class, "magnet");
         elapsedTime = new ElapsedTime();
-        simplePController = (m,pos) -> {m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); m.setTargetPosition(pos); m.setMode(DcMotor.RunMode.RUN_TO_POSITION); while(Math.abs(m.getTargetPosition()-m.getCurrentPosition())>5){
+        simplePController = (m,pos) -> {m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); m.setTargetPosition((Integer) pos[0]); m.setMode(DcMotor.RunMode.RUN_TO_POSITION); while(Math.abs(m.getTargetPosition()-m.getCurrentPosition())>5){
             m.setPower((m.getPower() + m.getTargetPosition()>0?1:-1*(double)m.getCurrentPosition()/m.getTargetPosition()<.5?ACCEL_GAIN:-ACCEL_GAIN)>MAX_VELO?MAX_VELO: Math.max((m.getPower() + m.getTargetPosition() > 0 ? 1 : -1 * (double) m.getCurrentPosition() / m.getTargetPosition() < .5 ? ACCEL_GAIN : -ACCEL_GAIN), (-MAX_VELO)));} m.setPower(0);};
+        moveArm = (wd, parameters) -> {
+            slideMotor.setPower(l_op.gamepad2.right_stick_y);
+            wormDrive.setPower(-l_op.gamepad2.left_stick_y / 1.5);
+
+            leftClaw.setPower(l_op.gamepad2.left_bumper ? -.2 : l_op.gamepad2.left_trigger > 0 ? .3 : 0);
+            rightClaw.setPower(l_op.gamepad2.right_bumper ? .2 : l_op.gamepad2.right_trigger > 0 ? -.3 : 0);
+
+            if (l_op.gamepad2.dpad_down){
+                wristPos(WristPos.DOWN);
+            }else if (l_op.gamepad2.dpad_up){
+                wristPos(WristPos.BACKDROP);
+            }
+
+            if (l_op.gamepad2.triangle && !armLimit.isPressed() && ! isUp){
+                elapsedTime.reset();
+                while (!armLimit.isPressed()&&elapsedTime.time(TimeUnit.SECONDS)<4.5) {
+                    wormDrive.setPower(.65);
+                }
+                wormDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                wormDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                isUp = true;
+
+            }
+            if (armLimit.isPressed()&&l_op.gamepad2.cross&&isUp){
+                wormDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                wormDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                wormDrive.setTargetPosition((int)(-145.1*28/3+0.6));
+
+                wormDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                double motorPower = 0;
+                double error = wormDrive.getTargetPosition();
+
+                while (Math.abs(error)>5){
+                    motorPower = (Math.abs(wormDrive.getCurrentPosition())<Math.abs(wormDrive.getTargetPosition()/2)?motorPower+ACCEL_GAIN+0.02:motorPower-ACCEL_GAIN-0.02);
+                    wormDrive.setPower(motorPower);
+                    error = wormDrive.getTargetPosition()-wormDrive.getCurrentPosition();
+                }
+                wormDrive.setPower(0);
+                wormDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                wormDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                isUp = false;
+            }
+        };
     }
 
-    public void setLambdaParameters(SmolFunction func, DcMotor motor, int x){
-        this.motor = motor;
-        this.x = x;
-        theFunction = func;
+    public void setLambdaParameters(@NonNull UniLambdas theLambda, Object... args){
+        this.args = args;
+        this.theLambda = theLambda;
+        switch (theLambda){
+            case MOVEARM:
+                theFunction = moveArm;
+                break;
+            default:
+                theFunction = simplePController;
+                break;
+        }
     }
 
     @Override
     public void run() {
-        theFunction.execute(motor, x);
+        switch (theLambda){
+            case MOVEARM:
+                while (l_op.opModeIsActive()) {
+                    theFunction.execute((DcMotor) args[0]);
+                }
+                break;
+            default:
+                theFunction.execute((DcMotor) args[0], (Integer) args[1]);
+                break;
+        }
     }
 
     public void hooksDown(boolean yes){
@@ -430,49 +499,48 @@ public class BaseRobotMethodsAndStuff implements Runnable{
         l_op.telemetry.addData("CONTROLS : ", inverseControls == 1 ? "REGULAR" : "INVERTED");
         l_op.telemetry.update();
 
-        slideMotor.setPower(l_op.gamepad2.right_stick_y);
-        wormDrive.setPower(-l_op.gamepad2.left_stick_y / 1.5);
-
-        leftClaw.setPower(l_op.gamepad2.left_bumper ? -.2 : l_op.gamepad2.left_trigger > 0 ? .3 : 0);
-        rightClaw.setPower(l_op.gamepad2.right_bumper ? .2 : l_op.gamepad2.right_trigger > 0 ? -.3 : 0);
-
-        if (l_op.gamepad2.dpad_down){
-            wristPos(WristPos.DOWN);
-        }else if (l_op.gamepad2.dpad_up){
-            wristPos(WristPos.BACKDROP);
-        }
-
-        if (l_op.gamepad2.triangle && !armLimit.isPressed() && ! isUp){
-            elapsedTime.reset();
-            while (!armLimit.isPressed()&&elapsedTime.time(TimeUnit.SECONDS)<4.5) {
-                wormDrive.setPower(.65);
-            }
-            wormDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            wormDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            isUp = true;
-
-        }
-        if (armLimit.isPressed()&&l_op.gamepad2.cross&&isUp){
-            wormDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            wormDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-            wormDrive.setTargetPosition((int)(-145.1*28/3+0.6));
-
-            wormDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            double motorPower = 0;
-            double error = wormDrive.getTargetPosition();
-
-            while (Math.abs(error)>5){
-                motorPower = (Math.abs(wormDrive.getCurrentPosition())<Math.abs(wormDrive.getTargetPosition()/2)?motorPower+ACCEL_GAIN+0.02:motorPower-ACCEL_GAIN-0.02);
-                wormDrive.setPower(motorPower);
-                error = wormDrive.getTargetPosition()-wormDrive.getCurrentPosition();
-            }
-            wormDrive.setPower(0);
-            wormDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            wormDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            isUp = false;
-
-        }
+//        slideMotor.setPower(l_op.gamepad2.right_stick_y);
+//        wormDrive.setPower(-l_op.gamepad2.left_stick_y / 1.5);
+//
+//        leftClaw.setPower(l_op.gamepad2.left_bumper ? -.2 : l_op.gamepad2.left_trigger > 0 ? .3 : 0);
+//        rightClaw.setPower(l_op.gamepad2.right_bumper ? .2 : l_op.gamepad2.right_trigger > 0 ? -.3 : 0);
+//
+//        if (l_op.gamepad2.dpad_down){
+//            wristPos(WristPos.DOWN);
+//        }else if (l_op.gamepad2.dpad_up){
+//            wristPos(WristPos.BACKDROP);
+//        }
+//
+//        if (l_op.gamepad2.triangle && !armLimit.isPressed() && ! isUp){
+//            elapsedTime.reset();
+//            while (!armLimit.isPressed()&&elapsedTime.time(TimeUnit.SECONDS)<4.5) {
+//                wormDrive.setPower(.65);
+//            }
+//            wormDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            wormDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            isUp = true;
+//
+//        }
+//        if (armLimit.isPressed()&&l_op.gamepad2.cross&&isUp){
+//            wormDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            wormDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//
+//            wormDrive.setTargetPosition((int)(-145.1*28/3+0.6));
+//
+//            wormDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//            double motorPower = 0;
+//            double error = wormDrive.getTargetPosition();
+//
+//            while (Math.abs(error)>5){
+//                motorPower = (Math.abs(wormDrive.getCurrentPosition())<Math.abs(wormDrive.getTargetPosition()/2)?motorPower+ACCEL_GAIN+0.02:motorPower-ACCEL_GAIN-0.02);
+//                wormDrive.setPower(motorPower);
+//                error = wormDrive.getTargetPosition()-wormDrive.getCurrentPosition();
+//            }
+//            wormDrive.setPower(0);
+//            wormDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            wormDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            isUp = false;
+//        }
     }
 }

@@ -15,9 +15,11 @@ public class AreaTeleOP extends LinearOpMode {
         BaseRobotMethodsAndStuff robot = new BaseRobotMethodsAndStuff(this);
         robot.center();
         robot.wristPos(BaseRobotMethodsAndStuff.WristPos.BACKDROP);
+        robot.setLambdaParameters(BaseRobotMethodsAndStuff.UniLambdas.MOVEARM, robot.wormDrive, gamepad2);
+        Thread arm = new Thread(robot);
         waitForStart();
         robot.hooksDown(true);
-
+        arm.start();
         while (opModeIsActive()){
             robot.moveBase();
         }

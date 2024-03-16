@@ -1,26 +1,35 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
-import com.qualcomm.hardware.rev.RevTouchSensor;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Helpers.BaseRobotMethodsAndStuff;
 
-
-@TeleOp(name = "salahIntaketest teleop")
+@TeleOp(name = "My TeleOp")
 public class newintaketest extends LinearOpMode {
-    RevTouchSensor touchSensor;
+
+    DcMotor motor;
+    Servo myServo;
     @Override
     public void runOpMode() {
-        touchSensor = hardwareMap.get(RevTouchSensor.class, "magnet");
-        BaseRobotMethodsAndStuff robotMethodsAndStuff = new BaseRobotMethodsAndStuff(this);
+        motor = hardwareMap.get(DcMotor.class, "motor");
+        myServo = hardwareMap.get(Servo.class, "servo");
 
         waitForStart();
 
+        motor.setPower(1);
+        myServo.setPosition(0.5);
 
-        while (opModeIsActive()){
-        telemetry.addData("yes: ", touchSensor.isPressed());
-        telemetry.update();
-        }
+        sleep(5000);
+
+        motor.setPower(-1);
+
+        sleep(5000);
+
+        motor.setPower(0);
     }
 }
